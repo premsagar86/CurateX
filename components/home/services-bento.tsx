@@ -12,7 +12,7 @@ import { useTilt } from "./motion/use-tilt";
 const LAYOUT = [
   "col-span-6 md:col-span-4 md:row-span-2 rounded-[2rem]",
   "col-span-6 md:col-span-2 md:row-span-2 rounded-[2rem] md:-rotate-2 md:-ml-6 md:mt-10",
-  "col-span-3 md:col-span-2 aspect-square rounded-full text-center",
+  "col-span-3 aspect-square md:col-span-2 md:aspect-auto md:h-[150px] md:w-[150px] md:mx-auto rounded-full text-center",
   "col-span-3 md:col-span-2 rounded-[2rem] md:rotate-1",
   "col-span-6 md:col-span-2 rounded-[2rem] [clip-path:polygon(0_0,100%_0,100%_82%,85%_100%,0_100%)]",
   "col-span-6 md:col-span-3 rounded-[2rem] md:rotate-1",

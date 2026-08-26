@@ -51,7 +51,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
         <footer className="relative overflow-hidden border-t border-home-border bg-[#0d0b09] px-6 py-16 text-sm text-home-muted">
           <span
             aria-hidden
-            className="pointer-events-none absolute -bottom-10 left-1/2 -translate-x-1/2 select-none whitespace-nowrap font-display text-ghost text-white/[0.03]"
+            className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 select-none whitespace-nowrap font-display text-ghost text-white/[0.03]"
           >
             forge
           </span>

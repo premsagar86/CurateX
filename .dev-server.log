@@ -104,3 +104,44 @@ Retrying 1/3...
  GET /contact 200 in 157ms
  GET /login 200 in 98ms
  GET /process?_rsc=1dlbn 200 in 79ms
+ ○ Compiling /services ...
+ ✓ Compiled /services in 4.1s (2732 modules)
+ GET /services?_rsc=10mdj 200 in 506ms
+ ○ Compiling /work ...
+ ✓ Compiled /work in 1612ms (3827 modules)
+ GET /work?_rsc=pw528 200 in 359ms
+ ○ Compiling /about ...
+ ✓ Compiled /about in 1685ms (3830 modules)
+ GET /about?_rsc=10m9c 200 in 61ms
+ ○ Compiling /contact ...
+ ✓ Compiled /contact in 1503ms (2765 modules)
+ GET /contact?_rsc=153au 200 in 59ms
+ ○ Compiling /pricing ...
+ ✓ Compiled /pricing in 1545ms (2769 modules)
+ GET /pricing?_rsc=1x0iy 200 in 125ms
+ ○ Compiling /blog ...
+ ✓ Compiled /blog in 1720ms (3857 modules)
+ GET /blog?_rsc=1jzr4 200 in 114ms
+ GET / 200 in 491ms
+ ○ Compiling /services/[slug] ...
+ ✓ Compiled /services/[slug] in 1805ms (2765 modules)
+ GET /services/branding-visual-identity?_rsc=107jo 200 in 484ms
+ ✓ Compiled in 7.8s (3861 modules)
+ GET /services/branding-visual-identity?_rsc=13txh 200 in 423ms
+ ✓ Compiled in 1265ms (3861 modules)
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 1051ms (2764 modules)
+ GET /services/branding-visual-identity?_rsc=13txh 404 in 1199ms
+ GET /services/branding-visual-identity 200 in 385ms
+ GET / 200 in 83ms
+ GET /?_rsc=fmx40 200 in 57ms
+ GET / 200 in 125ms
+ ○ Compiling /login ...
+ ✓ Compiled /login in 1944ms (2809 modules)
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 1331ms (2792 modules)
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 1982ms
+ GET /login 200 in 77ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 28ms
+ GET /?_rsc=wuc80 200 in 81ms
+ GET / 200 in 132ms
