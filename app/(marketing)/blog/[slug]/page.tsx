@@ -1,9 +1,48 @@
-// Blog post — PLAN.md §20.11.
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
+// Blog Post — PLAN.md §20.11.
+import { notFound } from "next/navigation";
+import { db } from "@/lib/db";
+import { Section } from "@/components/ui/section";
+import { CtaBlock } from "@/components/marketing/cta-block";
+
+export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+  const post = await db.contentPost.findUnique({
+    where: { slug: params.slug },
+    include: { author: true },
+  });
+
+  if (!post || !post.publishedAt) notFound();
+
+  const related = await db.contentPost.findMany({
+    where: { publishedAt: { not: null }, id: { not: post.id } },
+    orderBy: { publishedAt: "desc" },
+    take: 2,
+  });
+
   return (
-    <article className="mx-auto max-w-xl px-6 py-16">
-      <h1 className="font-display text-3xl capitalize">{params.slug.replace(/-/g, " ")}</h1>
-      {/* TODO: article body from ContentPost, contextual CTA, related posts — PLAN.md §20.11 */}
-    </article>
+    <>
+      <Section
+        eyebrow={post.publishedAt?.toLocaleDateString("en-IN")}
+        heading={post.title}
+        body={`By ${post.author.name}`}
+      >
+        <div className="prose max-w-none whitespace-pre-wrap text-text">{post.body}</div>
+      </Section>
+
+      <CtaBlock heading="Want something like this for your business?" ctaLabel="See our services" ctaHref="/services" />
+
+      {related.length > 0 && (
+        <Section heading="Related posts">
+          <ul className="flex flex-col gap-2">
+            {related.map((r) => (
+              <li key={r.id}>
+                <a href={`/blog/${r.slug}`} className="underline">
+                  {r.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </Section>
+      )}
+    </>
   );
 }

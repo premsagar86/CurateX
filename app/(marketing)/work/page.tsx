@@ -1,9 +1,21 @@
-// Portfolio index — PLAN.md §20.4.
-export default function WorkPage() {
+// Portfolio / Work — PLAN.md §20.4.
+import { db } from "@/lib/db";
+import { Section } from "@/components/ui/section";
+import { CtaBlock } from "@/components/marketing/cta-block";
+import { WorkGrid } from "@/components/marketing/work-grid";
+
+export default async function WorkPage() {
+  const caseStudies = await db.caseStudy.findMany({
+    where: { publishedAt: { not: null } },
+    orderBy: { publishedAt: "desc" },
+  });
+
   return (
-    <section className="mx-auto max-w-container px-6 py-16">
-      <h1 className="font-display text-3xl">Work</h1>
-      {/* TODO: filter control + Project Card grid, backed by CaseStudy — PLAN.md §20.4, §29.12 */}
-    </section>
+    <>
+      <Section heading="Work" body="A look at what we've shipped, filtered by service.">
+        <WorkGrid caseStudies={caseStudies} />
+      </Section>
+      <CtaBlock />
+    </>
   );
 }

@@ -4,7 +4,10 @@
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 
-const UPLOAD_DIR = path.join(process.cwd(), "uploads");
+// Written under public/ so Next.js serves uploaded files directly at
+// /uploads/<key> without a dedicated streaming route (Phase 1 only — R2
+// serves via signed URLs instead in Phase 2, site.md §6.1).
+const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
 
 export async function saveFile(buffer: Buffer, key: string) {
   await mkdir(path.dirname(path.join(UPLOAD_DIR, key)), { recursive: true });

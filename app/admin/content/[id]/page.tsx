@@ -1,10 +1,16 @@
-// Content editor — structured form enforcing required SEO fields.
-// PLAN.md §33.9, §21.3, §22.9.
-export default function AdminContentEditPage({ params }: { params: { id: string } }) {
+// Admin — Content Edit — PLAN.md §18.3.
+import { notFound } from "next/navigation";
+import { db } from "@/lib/db";
+import { EditContentForm } from "@/components/admin/edit-content-form";
+
+export default async function AdminContentEditPage({ params }: { params: { id: string } }) {
+  const post = await db.contentPost.findUnique({ where: { id: params.id } });
+  if (!post) notFound();
+
   return (
-    <div>
-      <h1 className="font-display text-2xl">Edit content: {params.id}</h1>
-      {/* TODO: title/slug/body/metaDescription form (ContentPost) — PLAN.md §33.9 */}
+    <div className="flex max-w-2xl flex-col gap-6">
+      <h1 className="font-display text-2xl">Edit post</h1>
+      <EditContentForm postId={post.id} title={post.title} body={post.body} metaDescription={post.metaDescription} published={!!post.publishedAt} />
     </div>
   );
 }

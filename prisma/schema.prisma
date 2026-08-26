@@ -109,17 +109,19 @@ enum ProposalStatus {
 // ---------------------------------------------------------------------------
 
 model User {
-  id            String    @id @default(uuid())
-  name          String
-  email         String    @unique
-  emailVerified Boolean   @default(false)
-  image         String?
-  role          UserRole  @default(CLIENT) // clientId must be set when CLIENT, null when TEAM — app-level constraint (features/auth/)
-  clientId      String?
-  client        Client?   @relation(fields: [clientId], references: [id])
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  deletedAt     DateTime?
+  id                String    @id @default(uuid())
+  name              String
+  email             String    @unique
+  emailVerified     Boolean   @default(false)
+  image             String?
+  role              UserRole  @default(CLIENT) // clientId must be set when CLIENT, null when TEAM — app-level constraint (features/auth/)
+  clientId          String?
+  client            Client?   @relation(fields: [clientId], references: [id])
+  phone             String?
+  notificationPrefs Json? // per-notification-type Switch state, Settings page (PLAN.md §20.19/§37.4)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  deletedAt         DateTime?
 
   sessions      Session[]
   accounts      Account[]
@@ -153,9 +155,12 @@ model Account {
   userId                String
   accountId             String
   providerId            String // "credential" for email/password
+  issuer                String // Better Auth 1.7's account-linking field, e.g. "local:credential"
   password              String? // hashed, credential provider only
   accessToken           String?
   refreshToken          String?
+  idToken               String?
+  scope                 String?
   accessTokenExpiresAt  DateTime?
   refreshTokenExpiresAt DateTime?
   createdAt             DateTime  @default(now())
@@ -171,6 +176,7 @@ model Verification {
   identifier String // email, for password-reset / email-verification tokens
   value      String
   expiresAt  DateTime
+  metadata   Json? // invite-flow context, e.g. { clientId } — features/auth/create-invite.ts
   createdAt  DateTime @default(now())
 
   @@map("verification")
@@ -411,6 +417,8 @@ model CaseStudy {
   testimonial   Testimonial? @relation(fields: [testimonialId], references: [id])
   title         String
   slug          String       @unique
+  services      Json? // ServiceType[] tags for filtering/linking (§16.5, §20.4) — Json since MySQL
+                      // has no native scalar-list column type Prisma can map ServiceType[] to
   challenge     String       @db.Text
   approach      String       @db.Text
   outcome       String       @db.Text
