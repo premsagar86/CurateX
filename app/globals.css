@@ -85,3 +85,34 @@ body {
   color: var(--color-text);
   font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
 }
+
+/* Dark/bento tokens — global so the restyled header + footer (present on
+   every marketing page) can use them; only .home-experimental (the homepage
+   content area) actually switches its background/text to this palette. The
+   rest of the site's <main> keeps the light editorial tokens above. */
+:root {
+  --home-bg: #120f0c;
+  --home-surface: #1b1712;
+  --home-surface-2: #211c16;
+  --home-text: #f4f0e8;
+  --home-text-muted: #a89e8d;
+  --home-border: rgba(244, 240, 232, 0.12);
+}
+
+.home-experimental {
+  background: var(--home-bg);
+  color: var(--home-text);
+}
+
+.glass {
+  background: rgba(244, 240, 232, 0.06);
+  border: 1px solid rgba(244, 240, 232, 0.14);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-decor {
+    animation: none !important;
+  }
+}
