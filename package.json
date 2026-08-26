@@ -13,6 +13,7 @@
     "prisma:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.9.1",
     "@prisma/client": "^5.20.0",
     "@sentry/nextjs": "^8.34.0",
     "better-auth": "^1.0.0",
@@ -24,6 +25,7 @@
     "razorpay": "^2.9.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hook-form": "^7.86.0",
     "tailwind-merge": "^2.5.3",
     "zod": "^3.23.8"
   },

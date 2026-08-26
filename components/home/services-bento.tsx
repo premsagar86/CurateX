@@ -20,6 +20,11 @@ const LAYOUT = [
   "col-span-6 rounded-[2rem]",
 ];
 
+// Cycles the hover glow through all three brand colors (Ember/Spark/Steel —
+// site.md §9.1) instead of leaning on primary alone, so the full palette
+// shows up across the grid rather than just two-thirds of it.
+const GLOW_COLORS = ["rgba(217,98,43,0.25)", "rgba(242,169,59,0.25)", "rgba(120,138,150,0.35)"];
+
 function ServiceTile({ service, index }: { service: Service; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   useTilt(ref as React.RefObject<HTMLElement>, 8);
@@ -31,7 +36,7 @@ function ServiceTile({ service, index }: { service: Service; index: number }) {
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
         style={{
-          background: "radial-gradient(280px circle at var(--mx,50%) var(--my,50%), rgba(217,98,43,0.25), transparent 70%)",
+          background: `radial-gradient(280px circle at var(--mx,50%) var(--my,50%), ${GLOW_COLORS[index % GLOW_COLORS.length]}, transparent 70%)`,
         }}
       />
       <span className="pointer-events-none absolute right-3 top-2 select-none font-display text-6xl leading-none text-white/[0.06] md:text-7xl">

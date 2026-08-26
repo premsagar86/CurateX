@@ -57,7 +57,7 @@ export function CtaFinale() {
       <div
         ref={shapeARef}
         aria-hidden
-        className="motion-decor absolute -left-10 top-10 h-64 w-64 rounded-[2rem] border border-primary/40 bg-home-bg/60 backdrop-blur-sm md:h-80 md:w-80"
+        className="motion-decor absolute -left-10 top-10 h-64 w-64 rounded-[2rem] border border-secondary/60 bg-home-bg/60 backdrop-blur-sm md:h-80 md:w-80"
         style={{ zIndex: 20 }}
       />
       <div

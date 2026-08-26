@@ -2,28 +2,34 @@
 // PLAN.md §20.19, §37.4.
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { changePassword } from "@/lib/auth-client";
+import { profileSchema, type ProfileInput } from "@/lib/validation/settings";
 
 export function ProfileForm({ name, email, phone }: { name: string; email: string; phone: string | null }) {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<ProfileInput>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: { name, phone: phone ?? "" },
+  });
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setLoading(true);
+  async function onSubmit(values: ProfileInput) {
     setSaved(false);
-    const formData = new FormData(event.currentTarget);
     const res = await fetch("/api/settings/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: String(formData.get("name")), phone: String(formData.get("phone") || "") }),
+      body: JSON.stringify(values),
     });
-    setLoading(false);
     if (res.ok) {
       setSaved(true);
       router.refresh();
@@ -31,10 +37,11 @@ export function ProfileForm({ name, email, phone }: { name: string; email: strin
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
       <div>
         <label htmlFor="name" className="block text-sm font-medium">Name</label>
-        <input id="name" name="name" defaultValue={name} required className="mt-1 w-full rounded-md border border-border px-3 py-2" />
+        <input id="name" className="mt-1 w-full rounded-md border border-border px-3 py-2" {...register("name")} />
+        {errors.name && <p className="mt-1 text-sm text-error">{errors.name.message}</p>}
       </div>
       <div>
         <label htmlFor="email" className="block text-sm font-medium">Email</label>
@@ -42,53 +49,65 @@ export function ProfileForm({ name, email, phone }: { name: string; email: strin
       </div>
       <div>
         <label htmlFor="phone" className="block text-sm font-medium">Phone</label>
-        <input id="phone" name="phone" defaultValue={phone ?? ""} className="mt-1 w-full rounded-md border border-border px-3 py-2" />
+        <input id="phone" className="mt-1 w-full rounded-md border border-border px-3 py-2" {...register("phone")} />
       </div>
-      <Button type="submit" loading={loading} size="sm" className="self-start">Save</Button>
+      <Button type="submit" loading={isSubmitting} size="sm" className="self-start">Save</Button>
       {saved && <p className="text-sm text-success">Saved.</p>}
     </form>
   );
 }
 
+interface PasswordFormInput {
+  currentPassword: string;
+  newPassword: string;
+}
+
 export function PasswordForm() {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<PasswordFormInput>();
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setLoading(true);
-    setError(null);
+  async function onSubmit(values: PasswordFormInput) {
     setSuccess(false);
+    const { error: changeError } = await changePassword({ ...values, revokeOtherSessions: true });
 
-    const formData = new FormData(event.currentTarget);
-    const currentPassword = String(formData.get("currentPassword"));
-    const newPassword = String(formData.get("newPassword"));
-
-    const { error: changeError } = await changePassword({ currentPassword, newPassword, revokeOtherSessions: true });
-
-    setLoading(false);
     if (changeError) {
-      setError("Could not change your password. Check your current password and try again.");
+      setError("root", { message: "Could not change your password. Check your current password and try again." });
       return;
     }
     setSuccess(true);
-    event.currentTarget.reset();
+    reset();
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
       <div>
         <label htmlFor="currentPassword" className="block text-sm font-medium">Current password</label>
-        <input id="currentPassword" name="currentPassword" type="password" required className="mt-1 w-full rounded-md border border-border px-3 py-2" />
+        <input
+          id="currentPassword"
+          type="password"
+          className="mt-1 w-full rounded-md border border-border px-3 py-2"
+          {...register("currentPassword", { required: true })}
+        />
       </div>
       <div>
         <label htmlFor="newPassword" className="block text-sm font-medium">New password</label>
-        <input id="newPassword" name="newPassword" type="password" required minLength={8} className="mt-1 w-full rounded-md border border-border px-3 py-2" />
+        <input
+          id="newPassword"
+          type="password"
+          className="mt-1 w-full rounded-md border border-border px-3 py-2"
+          {...register("newPassword", { required: true, minLength: 8 })}
+        />
+        {errors.newPassword && <p className="mt-1 text-sm text-error">Password must be at least 8 characters.</p>}
       </div>
-      {error && <p className="text-sm text-error">{error}</p>}
+      {errors.root && <p className="text-sm text-error">{errors.root.message}</p>}
       {success && <p className="text-sm text-success">Password updated.</p>}
-      <Button type="submit" loading={loading} size="sm" className="self-start">Change password</Button>
+      <Button type="submit" loading={isSubmitting} size="sm" className="self-start">Change password</Button>
     </form>
   );
 }
@@ -105,6 +124,8 @@ const PREF_LABELS: { key: keyof NotificationPrefs; label: string }[] = [
   { key: "projectComments", label: "New project messages" },
 ];
 
+// Each toggle saves instantly on change (no submit step), so this stays
+// plain controlled state rather than an RHF register/handleSubmit form.
 export function NotificationPrefsForm({ initial }: { initial: NotificationPrefs }) {
   const [prefs, setPrefs] = useState(initial);
   const [savingKey, setSavingKey] = useState<string | null>(null);

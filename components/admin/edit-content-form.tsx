@@ -1,9 +1,15 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { updateContentPostSchema } from "@/lib/validation/content-post";
+
+const formSchema = updateContentPostSchema.required({ title: true, metaDescription: true, body: true });
+type FormInput = { title: string; metaDescription: string; body: string };
 
 export function EditContentForm({
   postId,
@@ -19,25 +25,24 @@ export function EditContentForm({
   published: boolean;
 }) {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
   const [isPublished, setIsPublished] = useState(published);
   const [saved, setSaved] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<FormInput>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { title, metaDescription, body },
+  });
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setLoading(true);
+  async function onSubmit(values: FormInput) {
     setSaved(false);
-    const formData = new FormData(event.currentTarget);
     const res = await fetch(`/api/admin/content/${postId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title: String(formData.get("title")),
-        metaDescription: String(formData.get("metaDescription")),
-        body: String(formData.get("body")),
-      }),
+      body: JSON.stringify(values),
     });
-    setLoading(false);
     if (res.ok) {
       setSaved(true);
       router.refresh();
@@ -61,11 +66,14 @@ export function EditContentForm({
         <Switch checked={isPublished} onCheckedChange={togglePublished} />
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <input name="title" defaultValue={title} required className="rounded-md border border-border px-3 py-2 text-sm" />
-        <input name="metaDescription" defaultValue={metaDescription} required maxLength={300} className="rounded-md border border-border px-3 py-2 text-sm" />
-        <textarea name="body" defaultValue={body} required rows={12} className="rounded-md border border-border px-3 py-2 text-sm" />
-        <Button type="submit" loading={loading} size="sm" className="self-start">Save changes</Button>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
+        <input className="rounded-md border border-border px-3 py-2 text-sm" {...register("title")} />
+        <input maxLength={300} className="rounded-md border border-border px-3 py-2 text-sm" {...register("metaDescription")} />
+        <textarea rows={12} className="rounded-md border border-border px-3 py-2 text-sm" {...register("body")} />
+        <Button type="submit" loading={isSubmitting} size="sm" className="self-start">Save changes</Button>
+        {(errors.title || errors.metaDescription || errors.body) && (
+          <p className="text-sm text-error">{errors.title?.message ?? errors.metaDescription?.message ?? errors.body?.message}</p>
+        )}
         {saved && <p className="text-sm text-success">Saved.</p>}
       </form>
     </div>

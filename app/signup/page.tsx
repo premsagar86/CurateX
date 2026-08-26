@@ -2,9 +2,27 @@
 // publicly anywhere; reached only via a founder-sent invite email.
 "use client";
 
-import { Suspense, useState, type FormEvent } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
+
+// signupSchema (lib/validation/signup.ts) also validates `token`/`email`,
+// which aren't user-entered here (they come from the invite link) — mirror
+// its password-match refinement locally for just the fields this form owns.
+const signupFormSchema = z
+  .object({
+    name: z.string().min(1).max(100),
+    password: z.string().min(8),
+    confirmPassword: z.string().min(8),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"],
+  });
+type SignupFormInput = z.infer<typeof signupFormSchema>;
 
 export default function SignupPage() {
   return (
@@ -21,7 +39,11 @@ function SignupForm() {
   const email = searchParams.get("email");
 
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SignupFormInput>({ resolver: zodResolver(signupFormSchema) });
 
   if (!token || !email) {
     return (
@@ -35,25 +57,14 @@ function SignupForm() {
     );
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setLoading(true);
+  async function onSubmit(values: SignupFormInput) {
     setError(null);
-
-    const formData = new FormData(event.currentTarget);
     const res = await fetch("/api/auth/complete-signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        token,
-        email,
-        name: String(formData.get("name")),
-        password: String(formData.get("password")),
-        confirmPassword: String(formData.get("confirmPassword")),
-      }),
+      body: JSON.stringify({ token, email, ...values }),
     });
 
-    setLoading(false);
     if (!res.ok) {
       const body: { error?: { message?: string; fields?: Record<string, string[]> } } | null = await res
         .json()
@@ -70,7 +81,7 @@ function SignupForm() {
       <span className="font-display text-lg tracking-tight">forge</span>
       <h1 className="mt-6 font-display text-2xl">Set your password</h1>
 
-      <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="mt-6 flex flex-col gap-4">
         <div>
           <label htmlFor="email" className="block text-sm font-medium">
             Email
@@ -81,22 +92,25 @@ function SignupForm() {
           <label htmlFor="name" className="block text-sm font-medium">
             Name
           </label>
-          <input id="name" name="name" required maxLength={100} className="mt-1 w-full rounded-md border border-border px-3 py-2" />
+          <input id="name" maxLength={100} className="mt-1 w-full rounded-md border border-border px-3 py-2" {...register("name")} />
+          {errors.name && <p className="mt-1 text-sm text-error">{errors.name.message}</p>}
         </div>
         <div>
           <label htmlFor="password" className="block text-sm font-medium">
             Password
           </label>
-          <input id="password" name="password" type="password" required minLength={8} className="mt-1 w-full rounded-md border border-border px-3 py-2" />
+          <input id="password" type="password" className="mt-1 w-full rounded-md border border-border px-3 py-2" {...register("password")} />
+          {errors.password && <p className="mt-1 text-sm text-error">{errors.password.message}</p>}
         </div>
         <div>
           <label htmlFor="confirmPassword" className="block text-sm font-medium">
             Confirm password
           </label>
-          <input id="confirmPassword" name="confirmPassword" type="password" required minLength={8} className="mt-1 w-full rounded-md border border-border px-3 py-2" />
+          <input id="confirmPassword" type="password" className="mt-1 w-full rounded-md border border-border px-3 py-2" {...register("confirmPassword")} />
+          {errors.confirmPassword && <p className="mt-1 text-sm text-error">{errors.confirmPassword.message}</p>}
         </div>
         {error && <p className="text-sm text-error">{error}</p>}
-        <Button type="submit" loading={loading}>
+        <Button type="submit" loading={isSubmitting}>
           Set password &amp; continue
         </Button>
       </form>

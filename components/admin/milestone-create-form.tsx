@@ -1,40 +1,44 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
+import { createMilestoneSchema } from "@/lib/validation/milestone";
+
+const nameOnlySchema = createMilestoneSchema.pick({ name: true });
+type NameOnlyInput = { name: string };
 
 export function MilestoneCreateForm({ projectId, nextOrder }: { projectId: string; nextOrder: number }) {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<NameOnlyInput>({ resolver: zodResolver(nameOnlySchema) });
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    const formData = new FormData(event.currentTarget);
+  async function onSubmit(values: NameOnlyInput) {
     const res = await fetch(`/api/projects/${projectId}/milestones`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: String(formData.get("name")), order: nextOrder }),
+      body: JSON.stringify({ name: values.name, order: nextOrder }),
     });
 
-    setLoading(false);
     if (!res.ok) {
-      setError("Could not create the milestone.");
+      setError("root", { message: "Could not create the milestone." });
       return;
     }
-    event.currentTarget.reset();
+    reset();
     router.refresh();
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2">
-      <input name="name" required placeholder="Milestone name" className="flex-1 rounded-md border border-border px-3 py-2 text-sm" />
-      <Button type="submit" loading={loading} size="sm">Add milestone</Button>
-      {error && <p className="text-sm text-error">{error}</p>}
+    <form onSubmit={handleSubmit(onSubmit)} className="flex gap-2">
+      <input placeholder="Milestone name" className="flex-1 rounded-md border border-border px-3 py-2 text-sm" {...register("name")} />
+      <Button type="submit" loading={isSubmitting} size="sm">Add milestone</Button>
+      {(errors.root || errors.name) && <p className="text-sm text-error">{errors.root?.message ?? errors.name?.message}</p>}
     </form>
   );
 }

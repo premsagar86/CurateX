@@ -2,9 +2,12 @@
 // lib/validation/lead.ts; server re-validates the same shape (§30.2).
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { trackEvent } from "@/lib/analytics";
+import { leadSchema, type LeadInput } from "@/lib/validation/lead";
 
 const SERVICES = [
   ["WEBSITE", "Website"],
@@ -33,17 +36,15 @@ const TIMELINES = [
 ] as const;
 
 export function ContactForm() {
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [success, setSuccess] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<LeadInput>({ resolver: zodResolver(leadSchema) });
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setStatus("loading");
-    setErrors({});
-
-    const formData = new FormData(event.currentTarget);
-    const payload = Object.fromEntries(formData.entries());
-
+  async function onSubmit(payload: LeadInput) {
     const res = await fetch("/api/leads", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -51,7 +52,7 @@ export function ContactForm() {
     });
 
     if (res.ok) {
-      setStatus("success");
+      setSuccess(true);
       trackEvent("contact_form_submitted", {
         service: String(payload.service),
         budget_range: String(payload.budgetRange),
@@ -60,47 +61,49 @@ export function ContactForm() {
     }
 
     const body = await res.json().catch(() => null);
-    setErrors(body?.error?.fields ?? {});
-    setStatus("error");
+    const fields: Record<string, string> = body?.error?.fields ?? {};
+    for (const [field, message] of Object.entries(fields)) {
+      setError(field as keyof LeadInput, { message });
+    }
   }
 
-  if (status === "success") {
+  if (success) {
     return <p className="text-lg">Thanks — we&apos;ll respond within one business day.</p>;
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
       {/* Honeypot — invisible to real users, PLAN.md §21.9 spam prevention */}
-      <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" />
+      <input type="text" tabIndex={-1} autoComplete="off" className="hidden" {...register("website")} />
 
       <div>
         <label htmlFor="name" className="block text-sm font-medium">
           Name
         </label>
-        <input id="name" name="name" required maxLength={100} className="mt-1 w-full rounded-md border border-border px-3 py-2" />
-        {errors.name && <p className="mt-1 text-sm text-error">{errors.name}</p>}
+        <input id="name" maxLength={100} className="mt-1 w-full rounded-md border border-border px-3 py-2" {...register("name")} />
+        {errors.name && <p className="mt-1 text-sm text-error">{errors.name.message}</p>}
       </div>
 
       <div>
         <label htmlFor="email" className="block text-sm font-medium">
           Email
         </label>
-        <input id="email" name="email" type="email" required className="mt-1 w-full rounded-md border border-border px-3 py-2" />
-        {errors.email && <p className="mt-1 text-sm text-error">{errors.email}</p>}
+        <input id="email" type="email" className="mt-1 w-full rounded-md border border-border px-3 py-2" {...register("email")} />
+        {errors.email && <p className="mt-1 text-sm text-error">{errors.email.message}</p>}
       </div>
 
       <div>
         <label htmlFor="company" className="block text-sm font-medium">
           Company <span className="text-text-muted">(optional)</span>
         </label>
-        <input id="company" name="company" className="mt-1 w-full rounded-md border border-border px-3 py-2" />
+        <input id="company" className="mt-1 w-full rounded-md border border-border px-3 py-2" {...register("company")} />
       </div>
 
       <div>
         <label htmlFor="service" className="block text-sm font-medium">
           Service interested in
         </label>
-        <select id="service" name="service" required className="mt-1 w-full rounded-md border border-border px-3 py-2">
+        <select id="service" className="mt-1 w-full rounded-md border border-border px-3 py-2" {...register("service")}>
           {SERVICES.map(([value, label]) => (
             <option key={value} value={value}>
               {label}
@@ -113,7 +116,7 @@ export function ContactForm() {
         <label htmlFor="budgetRange" className="block text-sm font-medium">
           Budget range
         </label>
-        <select id="budgetRange" name="budgetRange" required className="mt-1 w-full rounded-md border border-border px-3 py-2">
+        <select id="budgetRange" className="mt-1 w-full rounded-md border border-border px-3 py-2" {...register("budgetRange")}>
           {BUDGETS.map(([value, label]) => (
             <option key={value} value={value}>
               {label}
@@ -126,7 +129,7 @@ export function ContactForm() {
         <label htmlFor="timeline" className="block text-sm font-medium">
           Timeline
         </label>
-        <select id="timeline" name="timeline" required className="mt-1 w-full rounded-md border border-border px-3 py-2">
+        <select id="timeline" className="mt-1 w-full rounded-md border border-border px-3 py-2" {...register("timeline")}>
           {TIMELINES.map(([value, label]) => (
             <option key={value} value={value}>
               {label}
@@ -139,10 +142,10 @@ export function ContactForm() {
         <label htmlFor="message" className="block text-sm font-medium">
           Message <span className="text-text-muted">(optional)</span>
         </label>
-        <textarea id="message" name="message" rows={4} className="mt-1 w-full rounded-md border border-border px-3 py-2" />
+        <textarea id="message" rows={4} className="mt-1 w-full rounded-md border border-border px-3 py-2" {...register("message")} />
       </div>
 
-      <Button type="submit" loading={status === "loading"}>
+      <Button type="submit" loading={isSubmitting}>
         Send inquiry
       </Button>
     </form>

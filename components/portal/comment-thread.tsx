@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
+import { commentSchema, type CommentInput } from "@/lib/validation/comment";
 
 export interface CommentData {
   id: string;
@@ -13,27 +15,26 @@ export interface CommentData {
 
 export function CommentThread({ projectId, comments }: { projectId: string; comments: CommentData[] }) {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<CommentInput>({ resolver: zodResolver(commentSchema) });
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    const formData = new FormData(event.currentTarget);
+  async function onSubmit(payload: CommentInput) {
     const res = await fetch(`/api/projects/${projectId}/comments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ body: String(formData.get("body")) }),
+      body: JSON.stringify(payload),
     });
 
-    setLoading(false);
     if (!res.ok) {
-      setError("Could not post your message. Try again.");
+      setError("root", { message: "Could not post your message. Try again." });
       return;
     }
-    event.currentTarget.reset();
+    reset();
     router.refresh();
   }
 
@@ -53,10 +54,10 @@ export function CommentThread({ projectId, comments }: { projectId: string; comm
         </ul>
       )}
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-        <textarea name="body" required rows={3} placeholder="Write a message about this project…" className="w-full rounded-md border border-border px-3 py-2" />
-        {error && <p className="text-sm text-error">{error}</p>}
-        <Button type="submit" loading={loading} size="sm" className="self-start">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
+        <textarea rows={3} placeholder="Write a message about this project…" className="w-full rounded-md border border-border px-3 py-2" {...register("body")} />
+        {(errors.root || errors.body) && <p className="text-sm text-error">{errors.root?.message ?? errors.body?.message}</p>}
+        <Button type="submit" loading={isSubmitting} size="sm" className="self-start">
           Post
         </Button>
       </form>

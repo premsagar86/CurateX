@@ -27,3 +27,77 @@ Retrying 1/3...
  ○ Compiling /pricing ...
  ✓ Compiled /pricing in 692ms (3263 modules)
  GET /pricing 200 in 844ms
+ ✓ Compiled in 2.8s (780 modules)
+ ✓ Compiled in 1777ms (584 modules)
+ ✓ Compiled in 168ms (584 modules)
+ ✓ Compiled in 200ms (584 modules)
+ ✓ Compiled in 219ms (584 modules)
+ ✓ Compiled in 512ms (584 modules)
+ ✓ Compiled in 375ms (584 modules)
+ ○ Compiling / ...
+ ✓ Compiled / in 3.1s (2678 modules)
+ GET / 200 in 9004ms
+ ✓ Compiled in 513ms (584 modules)
+ ○ Compiling /services/[slug] ...
+ ✓ Compiled /services/[slug] in 2.6s (3269 modules)
+ ✓ Compiled in 349ms (584 modules)
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 3.3s (3272 modules)
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /_next/static/webpack/6e999a7463d93bde.webpack.hot-update.json 404 in 4269ms
+ GET /services/branding-visual-identity?_rsc=13txh 200 in 3650ms
+ GET / 200 in 178ms
+ ✓ Compiled in 996ms (585 modules)
+ GET /?_rsc=j9axs 200 in 538ms
+ ✓ Compiled in 570ms (585 modules)
+ GET /?_rsc=j9axs 200 in 97ms
+ ✓ Compiled in 649ms (585 modules)
+ GET /?_rsc=j9axs 200 in 100ms
+ ✓ Compiled in 645ms (585 modules)
+ ✓ Compiled in 789ms (585 modules)
+ GET /?_rsc=j9axs 200 in 800ms
+ GET /?_rsc=j9axs 200 in 177ms
+ ✓ Compiled in 458ms (585 modules)
+ ✓ Compiled in 484ms (585 modules)
+ GET /?_rsc=j9axs 200 in 480ms
+ GET /?_rsc=j9axs 200 in 71ms
+ ✓ Compiled in 361ms (585 modules)
+ ✓ Compiled in 720ms (585 modules)
+ GET /?_rsc=j9axs 200 in 694ms
+ GET /?_rsc=j9axs 200 in 50ms
+ ✓ Compiled in 419ms (585 modules)
+ ✓ Compiled in 437ms (585 modules)
+ GET /?_rsc=j9axs 200 in 446ms
+ GET /?_rsc=j9axs 200 in 64ms
+ ✓ Compiled in 377ms (585 modules)
+ GET /?_rsc=j9axs 200 in 110ms
+ ✓ Compiled in 359ms (585 modules)
+ ✓ Compiled in 383ms (585 modules)
+ GET /?_rsc=j9axs 200 in 432ms
+ GET /?_rsc=j9axs 200 in 38ms
+ ✓ Compiled in 378ms (585 modules)
+ ✓ Compiled in 401ms (585 modules)
+ GET /?_rsc=j9axs 200 in 411ms
+ GET /?_rsc=j9axs 200 in 58ms
+ ✓ Compiled in 520ms (585 modules)
+ GET /?_rsc=j9axs 200 in 96ms
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 9.9s (3756 modules)
+ GET /services/ecommerce-builds?_rsc=j9axs 200 in 714ms
+ GET /services/ecommerce-builds?_rsc=j8i04 200 in 60ms
+ GET /services/ecommerce-builds 200 in 712ms
+ GET / 200 in 135ms
+ ○ Compiling /process ...
+ ✓ Compiled /process in 8.8s (3755 modules)
+ GET /process?_rsc=1204c 200 in 48ms
+ GET / 200 in 81ms
+ ○ Compiling /contact ...
+ ✓ Compiled /contact in 2.6s (3779 modules)
+ GET /contact 200 in 3045ms
+ ○ Compiling /login ...
+ ✓ Compiled /login in 2.7s (3871 modules)
+ GET /login 200 in 3185ms
+ ○ Compiling /signup ...
+ ✓ Compiled /signup in 2.1s (3877 modules)
+ GET /signup 200 in 2505ms
+ GET /signup?token=abc&email=test@example.com 200 in 85ms

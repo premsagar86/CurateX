@@ -1,52 +1,54 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
+import { createContentPostSchema } from "@/lib/validation/content-post";
 
 function slugify(value: string) {
   return value.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-");
 }
 
+const formSchema = createContentPostSchema.omit({ slug: true });
+type FormInput = { title: string; metaDescription: string; body: string };
+
 export function CreateContentForm() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<FormInput>({ resolver: zodResolver(formSchema) });
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    const formData = new FormData(event.currentTarget);
-    const title = String(formData.get("title"));
+  async function onSubmit(values: FormInput) {
     const res = await fetch("/api/admin/content", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title,
-        slug: slugify(title),
-        metaDescription: String(formData.get("metaDescription")),
-        body: String(formData.get("body")),
-      }),
+      body: JSON.stringify({ ...values, slug: slugify(values.title) }),
     });
 
-    setLoading(false);
     if (!res.ok) {
-      setError("Could not create the post.");
+      setError("root", { message: "Could not create the post." });
       return;
     }
-    event.currentTarget.reset();
+    reset();
     router.refresh();
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-      <input name="title" required placeholder="Title" className="rounded-md border border-border px-3 py-2 text-sm" />
-      <input name="metaDescription" required maxLength={300} placeholder="Meta description" className="rounded-md border border-border px-3 py-2 text-sm" />
-      <textarea name="body" required rows={6} placeholder="Post body" className="rounded-md border border-border px-3 py-2 text-sm" />
-      <Button type="submit" loading={loading} size="sm" className="self-start">Create draft</Button>
-      {error && <p className="text-sm text-error">{error}</p>}
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
+      <input placeholder="Title" className="rounded-md border border-border px-3 py-2 text-sm" {...register("title")} />
+      <input maxLength={300} placeholder="Meta description" className="rounded-md border border-border px-3 py-2 text-sm" {...register("metaDescription")} />
+      <textarea rows={6} placeholder="Post body" className="rounded-md border border-border px-3 py-2 text-sm" {...register("body")} />
+      <Button type="submit" loading={isSubmitting} size="sm" className="self-start">Create draft</Button>
+      {(errors.root || errors.title || errors.metaDescription || errors.body) && (
+        <p className="text-sm text-error">
+          {errors.root?.message ?? errors.title?.message ?? errors.metaDescription?.message ?? errors.body?.message}
+        </p>
+      )}
     </form>
   );
 }
