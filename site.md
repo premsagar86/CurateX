@@ -48,15 +48,17 @@ generator client {
 }
 
 model User {
-  id            String   @id @default(uuid())
-  name          String
-  email         String   @unique
-  emailVerified Boolean  @default(false)
-  image         String?
-  role          String   @default("CLIENT") // "CLIENT" | "TEAM"
-  clientId      String?  // set only when role = "CLIENT", links to Client.id
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id                String   @id @default(uuid())
+  name              String
+  email             String   @unique
+  emailVerified     Boolean  @default(false)
+  image             String?
+  role              String   @default("CLIENT") // "CLIENT" | "TEAM"
+  clientId          String?  // set only when role = "CLIENT", links to Client.id
+  phone             String?  // added for Settings, §20.19 — not in the original schema draft
+  notificationPrefs Json?    // per-notification-type Switch state, §20.19/§37.4 — added for the same reason
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   sessions Session[]
   accounts Account[]
