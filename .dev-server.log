@@ -101,3 +101,6 @@ Retrying 1/3...
  ✓ Compiled /signup in 2.1s (3877 modules)
  GET /signup 200 in 2505ms
  GET /signup?token=abc&email=test@example.com 200 in 85ms
+ GET /contact 200 in 157ms
+ GET /login 200 in 98ms
+ GET /process?_rsc=1dlbn 200 in 79ms
