@@ -65,7 +65,7 @@ export default {
         "display-1": ["clamp(3rem, 9vw, 8.5rem)", { lineHeight: "0.92", letterSpacing: "-0.03em" }],
         "display-2": ["clamp(2.25rem, 5.5vw, 4.5rem)", { lineHeight: "0.95", letterSpacing: "-0.02em" }],
         "display-3": ["clamp(1.75rem, 3.5vw, 2.75rem)", { lineHeight: "1", letterSpacing: "-0.01em" }],
-        ghost: ["clamp(5rem, 16vw, 14rem)", { lineHeight: "0.85" }],
+        ghost: ["clamp(7rem, 24vw, 22rem)", { lineHeight: "0.85" }],
       },
       boxShadow: {
         "glow-primary": "0 0 0 1px rgba(217,98,43,0.35), 0 20px 60px -15px rgba(217,98,43,0.45)",
