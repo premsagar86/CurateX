@@ -15,29 +15,21 @@ export interface HeroProps {
 
 export function Hero({ eyebrow, headline, subhead, primaryCta, secondaryCta, visual }: HeroProps) {
   return (
-    <div className="mx-auto grid max-w-container gap-10 px-6 py-16 md:grid-cols-2 md:items-center md:py-24">
-      <div>
-        {eyebrow && <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-primary">{eyebrow}</p>}
-        <h1 className="font-display text-4xl leading-tight md:text-5xl">{headline}</h1>
-        {subhead && <p className="mt-4 max-w-lg text-lg text-text-muted">{subhead}</p>}
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link href={primaryCta.href} className={buttonVariants({ size: "lg" })}>
-            {primaryCta.label}
+    <div className="mx-auto flex max-w-container flex-col items-center gap-6 px-6 py-16 text-center md:py-24">
+      {eyebrow && <p className="text-sm font-semibold uppercase tracking-wide text-primary">{eyebrow}</p>}
+      <h1 className="max-w-3xl font-display text-4xl leading-tight md:text-5xl">{headline}</h1>
+      {subhead && <p className="mx-auto max-w-2xl text-lg text-text-muted">{subhead}</p>}
+      <div className="flex flex-wrap justify-center gap-3">
+        <Link href={primaryCta.href} className={buttonVariants({ size: "lg" })}>
+          {primaryCta.label}
+        </Link>
+        {secondaryCta && (
+          <Link href={secondaryCta.href} className={buttonVariants({ variant: "outline", size: "lg" })}>
+            {secondaryCta.label}
           </Link>
-          {secondaryCta && (
-            <Link href={secondaryCta.href} className={buttonVariants({ variant: "outline", size: "lg" })}>
-              {secondaryCta.label}
-            </Link>
-          )}
-        </div>
-      </div>
-      <div className="flex items-center justify-center">
-        {visual ?? (
-          <div className="flex aspect-video w-full items-center justify-center rounded-lg border border-dashed border-border bg-surface-elevated text-sm text-text-muted">
-            Project visual
-          </div>
         )}
       </div>
+      {visual && <div className="mt-4 w-full max-w-3xl">{visual}</div>}
     </div>
   );
 }
