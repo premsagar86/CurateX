@@ -256,3 +256,19 @@ SyntaxError: Invalid or unexpected token
  ✓ Compiled in 1179ms (3889 modules)
  GET /?_rsc=j9axs 200 in 95ms
  GET / 200 in 76ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'D:\project_3\CurateX\.next\cache\webpack\server-development\0.pack.gz_' -> 'D:\project_3\CurateX\.next\cache\webpack\server-development\0.pack.gz'
+ ✓ Compiled in 1696ms (3889 modules)
+ GET /?_rsc=j9axs 200 in 90ms
+ ✓ Compiled in 1895ms (3889 modules)
+ GET /?_rsc=j9axs 200 in 77ms
+ GET / 200 in 124ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'D:\project_3\CurateX\.next\cache\webpack\server-development\0.pack.gz_' -> 'D:\project_3\CurateX\.next\cache\webpack\server-development\0.pack.gz'
+ ✓ Compiled in 2.1s (3889 modules)
+ GET /?_rsc=j9axs 200 in 125ms
+ ✓ Compiled in 1537ms (3889 modules)
+ GET /?_rsc=j9axs 200 in 185ms
+ ✓ Compiled in 471ms (1099 modules)
+ GET /?_rsc=j9axs 200 in 37ms
+ ✓ Compiled in 3.1s (3889 modules)
+ GET /?_rsc=j9axs 200 in 107ms
+ GET / 200 in 67ms
