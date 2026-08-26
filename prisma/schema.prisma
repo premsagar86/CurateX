@@ -1,0 +1,449 @@
+// prisma/schema.prisma
+// Full schema per site.md §2.1 (Better Auth tables) + §14 (business-domain
+// models). Phase 1 datasource is MySQL (site.md §5.1); swap to
+// "postgresql" per site.md §6.3 for the optional Phase 2 migration.
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ---------------------------------------------------------------------------
+// Enums — site.md §14.2
+// ---------------------------------------------------------------------------
+
+enum UserRole {
+  CLIENT
+  TEAM
+}
+
+enum ServiceType {
+  WEBSITE
+  UI_UX_DESIGN
+  BRANDING
+  GRAPHIC_DESIGN
+  SOCIAL_MEDIA
+  CONTENT_CREATION
+  SEO
+  ECOMMERCE
+}
+
+enum BudgetRange {
+  UNDER_25K
+  RANGE_25K_75K
+  RANGE_75K_2L
+  OVER_2L
+  NOT_SURE
+}
+
+enum TimelineUrgency {
+  ASAP
+  ONE_MONTH
+  ONE_TO_THREE_MONTHS
+  FLEXIBLE
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  DISQUALIFIED
+  CONVERTED
+}
+
+enum AcquisitionSource {
+  REFERRAL
+  OUTREACH
+  INBOUND
+  PARTNER
+}
+
+enum PackageTier {
+  STARTER
+  GROWTH
+  PREMIUM
+  CUSTOM
+}
+
+// Project entity tracks ONBOARDING through CLOSED; LEAD through WON are
+// tracked on the Lead entity via LeadStatus above (PLAN.md §34.1 note).
+enum ProjectState {
+  ONBOARDING
+  ACTIVE
+  REVIEW
+  APPROVED
+  DELIVERED
+  CLOSED
+}
+
+enum MilestoneStatus {
+  UPCOMING
+  IN_PROGRESS
+  AWAITING_APPROVAL
+  APPROVED
+  DELIVERED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum ProposalStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  DECLINED
+  EXPIRED
+}
+
+// ---------------------------------------------------------------------------
+// Better Auth tables — site.md §2.1
+// ---------------------------------------------------------------------------
+
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  role          UserRole  @default(CLIENT) // clientId must be set when CLIENT, null when TEAM — app-level constraint (features/auth/)
+  clientId      String?
+  client        Client?   @relation(fields: [clientId], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+
+  sessions      Session[]
+  accounts      Account[]
+  projectsOwned Project[]      @relation("ProjectOwner")
+  files         File[]
+  comments      Comment[]
+  notifications Notification[]
+  contentPosts  ContentPost[]
+
+  @@index([clientId])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(uuid())
+  userId                String
+  accountId             String
+  providerId            String // "credential" for email/password
+  password              String? // hashed, credential provider only
+  accessToken           String?
+  refreshToken          String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @default(uuid())
+  identifier String // email, for password-reset / email-verification tokens
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  @@map("verification")
+}
+
+// ---------------------------------------------------------------------------
+// Business-domain models — site.md §14.3-14.11
+// ---------------------------------------------------------------------------
+
+model Lead {
+  id                String          @id @default(uuid())
+  name              String
+  email             String
+  company           String?
+  service           ServiceType
+  budgetRange       BudgetRange
+  timeline          TimelineUrgency
+  message           String?         @db.Text
+  internalNotes     String?         @db.Text
+  status            LeadStatus      @default(NEW)
+  convertedClientId String?
+  convertedClient   Client?         @relation(fields: [convertedClientId], references: [id])
+  createdAt         DateTime        @default(now())
+  deletedAt         DateTime?
+
+  proposals Proposal[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("lead")
+}
+
+model Client {
+  id          String            @id @default(uuid())
+  companyName String
+  industry    String?
+  source      AcquisitionSource
+  notes       String?           @db.Text
+  createdAt   DateTime          @default(now())
+  deletedAt   DateTime?
+
+  users        User[]
+  leads        Lead[]
+  projects     Project[]
+  invoices     Invoice[]
+  retainers    Retainer[]
+  testimonials Testimonial[]
+  proposals    Proposal[]
+  caseStudies  CaseStudy[]
+
+  @@map("client")
+}
+
+model Project {
+  id                 String       @id @default(uuid())
+  clientId           String
+  client             Client       @relation(fields: [clientId], references: [id])
+  name               String
+  serviceType        ServiceType
+  packageTier        PackageTier
+  state              ProjectState @default(ONBOARDING)
+  founderOwnerId     String
+  founderOwner       User         @relation("ProjectOwner", fields: [founderOwnerId], references: [id])
+  startDate          DateTime?    @db.Date
+  targetDeliveryDate DateTime?    @db.Date
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  deletedAt          DateTime?
+
+  milestones Milestone[]
+  files      File[]
+  comments   Comment[]
+  invoices   Invoice[]
+
+  @@index([clientId])
+  @@index([state])
+  @@index([founderOwnerId])
+  @@map("project")
+}
+
+model Milestone {
+  id          String          @id @default(uuid())
+  projectId   String
+  project     Project         @relation(fields: [projectId], references: [id])
+  name        String
+  description String?         @db.Text
+  order       Int
+  status      MilestoneStatus @default(UPCOMING)
+  dueDate     DateTime?       @db.Date
+  completedAt DateTime?
+
+  files    File[]
+  comments Comment[]
+
+  @@index([projectId, order])
+  @@map("milestone")
+}
+
+model File {
+  id               String    @id @default(uuid())
+  projectId        String
+  project          Project   @relation(fields: [projectId], references: [id])
+  milestoneId      String?
+  milestone        Milestone? @relation(fields: [milestoneId], references: [id])
+  uploadedByUserId String
+  uploadedBy       User      @relation(fields: [uploadedByUserId], references: [id])
+  name             String
+  storageKey       String
+  size             Int
+  mimeType         String
+  version          Int       @default(1)
+  supersedesFileId String?
+  supersedes       File?     @relation("FileVersion", fields: [supersedesFileId], references: [id])
+  supersededBy     File[]    @relation("FileVersion")
+  createdAt        DateTime  @default(now())
+  deletedAt        DateTime?
+
+  @@index([projectId])
+  @@index([milestoneId])
+  @@map("file")
+}
+
+model Comment {
+  id           String     @id @default(uuid())
+  projectId    String
+  project      Project    @relation(fields: [projectId], references: [id])
+  milestoneId  String?
+  milestone    Milestone? @relation(fields: [milestoneId], references: [id])
+  authorUserId String
+  author       User       @relation(fields: [authorUserId], references: [id])
+  body         String     @db.Text
+  createdAt    DateTime   @default(now())
+
+  @@index([projectId, createdAt])
+  @@map("comment")
+}
+
+model Invoice {
+  id                String        @id @default(uuid())
+  clientId          String
+  client            Client        @relation(fields: [clientId], references: [id])
+  projectId         String?
+  project           Project?      @relation(fields: [projectId], references: [id])
+  number            String        @unique
+  amountTotal       Decimal       @db.Decimal(10, 2)
+  currency          String        @default("INR")
+  status            InvoiceStatus @default(DRAFT)
+  dueDate           DateTime      @db.Date
+  paidAt            DateTime?
+  paymentReference  String? // Phase 1 — manual payment (UTR/UPI ref, site.md §5.3)
+  razorpayOrderId   String?       @unique // Phase 2, site.md §6.2
+  razorpayPaymentId String? // Phase 2, site.md §6.2
+  createdAt         DateTime      @default(now())
+
+  lineItems InvoiceLineItem[]
+
+  @@index([clientId])
+  @@index([status])
+  @@map("invoice")
+}
+
+model InvoiceLineItem {
+  id          String  @id @default(uuid())
+  invoiceId   String
+  invoice     Invoice @relation(fields: [invoiceId], references: [id])
+  description String
+  quantity    Int     @default(1)
+  unitAmount  Decimal @db.Decimal(10, 2)
+
+  @@map("invoice_line_item")
+}
+
+model Retainer {
+  id            String      @id @default(uuid())
+  clientId      String
+  client        Client      @relation(fields: [clientId], references: [id])
+  serviceType   ServiceType
+  monthlyAmount Decimal     @db.Decimal(10, 2)
+  status        String      @default("ACTIVE") // ACTIVE | PAUSED | CANCELLED
+  startDate     DateTime    @db.Date
+  billingDay    Int         @default(1) // day of month the scheduled job generates an Invoice
+  createdAt     DateTime    @default(now())
+
+  @@index([clientId])
+  @@map("retainer")
+}
+
+model Proposal {
+  id          String         @id @default(uuid())
+  leadId      String?
+  lead        Lead?          @relation(fields: [leadId], references: [id])
+  clientId    String?
+  client      Client?        @relation(fields: [clientId], references: [id])
+  status      ProposalStatus @default(DRAFT)
+  documentUrl String?
+  sentAt      DateTime?
+  acceptedAt  DateTime?
+  createdAt   DateTime       @default(now())
+
+  @@index([leadId])
+  @@index([clientId])
+  @@map("proposal")
+}
+
+model Notification {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  type      String // e.g. "MILESTONE_AWAITING_APPROVAL", "INVOICE_DUE"
+  payload   Json
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, readAt])
+  @@map("notification")
+}
+
+model ContentPost {
+  id              String    @id @default(uuid())
+  authorId        String
+  author          User      @relation(fields: [authorId], references: [id])
+  title           String
+  slug            String    @unique
+  body            String    @db.Text
+  metaDescription String
+  publishedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("content_post")
+}
+
+model CaseStudy {
+  id            String       @id @default(uuid())
+  clientId      String?
+  client        Client?      @relation(fields: [clientId], references: [id])
+  testimonialId String?
+  testimonial   Testimonial? @relation(fields: [testimonialId], references: [id])
+  title         String
+  slug          String       @unique
+  challenge     String       @db.Text
+  approach      String       @db.Text
+  outcome       String       @db.Text
+  publishedAt   DateTime?
+  createdAt     DateTime     @default(now())
+
+  @@map("case_study")
+}
+
+model Testimonial {
+  id         String    @id @default(uuid())
+  clientId   String
+  client     Client    @relation(fields: [clientId], references: [id])
+  quote      String    @db.Text
+  authorName String
+  authorRole String?
+  approvedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  caseStudies CaseStudy[]
+
+  @@map("testimonial")
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  actorUserId String?
+  entityType  String // e.g. "Invoice", "Project", "User"
+  entityId    String
+  action      String // e.g. "STATE_CHANGED", "ROLE_CHANGED", "INVOICE_EDITED"
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@map("audit_log")
+}
