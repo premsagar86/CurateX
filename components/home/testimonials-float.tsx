@@ -26,7 +26,7 @@ export function TestimonialsFloat({ testimonials }: { testimonials: TestimonialI
     <section className="relative overflow-hidden px-6 py-24 md:py-32">
       <span
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-8 -translate-x-1/2 select-none font-display text-ghost text-white/[0.04]"
+        className="pointer-events-none absolute left-1/2 top-8 -translate-x-1/2 select-none font-display text-ghost text-black/[0.04]"
       >
         &ldquo;
       </span>

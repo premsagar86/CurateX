@@ -59,7 +59,7 @@ export function PricingBento({ packages }: { packages: Package[] }) {
                 className={
                   featured
                     ? "mt-8 inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 font-semibold text-white hover:bg-primary-hover"
-                    : "mt-8 inline-flex h-12 items-center justify-center rounded-full border border-home-border px-6 font-semibold text-home-text hover:bg-white/5"
+                    : "mt-8 inline-flex h-12 items-center justify-center rounded-full border border-home-border px-6 font-semibold text-home-text hover:bg-black/5"
                 }
               >
                 Get a quote

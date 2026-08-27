@@ -6,20 +6,6 @@ import type { Service } from "@/config/services";
 import { revealBatch } from "./motion/reveal-batch";
 import { useTilt } from "./motion/use-tilt";
 
-// One hand-tuned layout slot per index — the asymmetry is intentional, not
-// derived, so each of the 8 services gets a distinct silhouette/personality
-// rather than a repeating card template.
-const LAYOUT = [
-  "col-span-6 md:col-span-4 md:row-span-2 rounded-[2rem]",
-  "col-span-6 md:col-span-2 md:row-span-2 rounded-[2rem] md:-rotate-2 md:-ml-6 md:mt-10",
-  "col-span-3 aspect-square md:col-span-2 md:aspect-auto md:h-[150px] md:w-[150px] md:mx-auto rounded-full text-center",
-  "col-span-3 md:col-span-2 rounded-[2rem] md:rotate-1",
-  "col-span-6 md:col-span-2 rounded-[2rem] [clip-path:polygon(0_0,100%_0,100%_82%,85%_100%,0_100%)]",
-  "col-span-6 md:col-span-3 rounded-[2rem] md:rotate-1",
-  "col-span-6 md:col-span-3 rounded-[2rem] md:-rotate-1",
-  "col-span-6 rounded-[2rem]",
-];
-
 // Cycles the hover glow through all three brand colors (Ember/Spark/Steel —
 // site.md §9.1) instead of leaning on primary alone, so the full palette
 // shows up across the grid rather than just two-thirds of it.
@@ -28,10 +14,13 @@ const GLOW_COLORS = ["rgba(217,98,43,0.25)", "rgba(242,169,59,0.25)", "rgba(120,
 function ServiceTile({ service, index }: { service: Service; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   useTilt(ref as React.RefObject<HTMLElement>, 8);
-  const isCircle = LAYOUT[index]?.includes("rounded-full");
 
   return (
-    <div ref={ref} data-reveal className={`group relative overflow-hidden border border-home-border bg-home-surface p-6 md:p-8 ${LAYOUT[index] ?? "col-span-3 rounded-[2rem]"}`}>
+    <div
+      ref={ref}
+      data-reveal
+      className="group relative flex min-h-[15rem] flex-col justify-end overflow-hidden rounded-3xl border border-home-border bg-home-surface p-6 md:min-h-[16rem] md:p-8"
+    >
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
@@ -39,15 +28,12 @@ function ServiceTile({ service, index }: { service: Service; index: number }) {
           background: `radial-gradient(280px circle at var(--mx,50%) var(--my,50%), ${GLOW_COLORS[index % GLOW_COLORS.length]}, transparent 70%)`,
         }}
       />
-      <span className="pointer-events-none absolute right-3 top-2 select-none font-display text-6xl leading-none text-white/[0.06] md:text-7xl">
+      <span className="pointer-events-none absolute right-3 top-2 select-none font-display text-5xl leading-none text-black/[0.06] md:text-6xl">
         {String(index + 1).padStart(2, "0")}
       </span>
-      <Link
-        href={`/services/${service.slug}`}
-        className={`relative flex h-full flex-col ${isCircle ? "items-center justify-center px-4 text-center" : "justify-end"}`}
-      >
-        <h3 className={`font-display text-home-text ${isCircle ? "text-lg" : "text-2xl md:text-3xl"}`}>{service.name}</h3>
-        {!isCircle && <p className="mt-2 text-sm text-home-muted">{service.oneLiner}</p>}
+      <Link href={`/services/${service.slug}`} className="relative flex h-full flex-col justify-end">
+        <h3 className="font-display text-2xl text-home-text line-clamp-2 md:text-[1.6rem]">{service.name}</h3>
+        <p className="mt-2 line-clamp-2 text-sm text-home-muted">{service.oneLiner}</p>
       </Link>
     </div>
   );
@@ -76,7 +62,7 @@ export function ServicesBento({ services }: { services: Service[] }) {
         </p>
       </div>
 
-      <div ref={containerRef} className="grid grid-cols-6 gap-4 md:auto-rows-[150px] md:gap-6">
+      <div ref={containerRef} className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {services.map((service, index) => (
           <ServiceTile key={service.slug} service={service} index={index} />
         ))}

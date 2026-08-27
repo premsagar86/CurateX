@@ -100,6 +100,12 @@ body {
 }
 
 .home-experimental {
+  --home-bg: var(--color-background);
+  --home-surface: var(--color-surface);
+  --home-surface-2: var(--color-surface-elevated);
+  --home-text: var(--color-text);
+  --home-text-muted: var(--color-text-muted);
+  --home-border: var(--color-border);
   background: var(--home-bg);
   color: var(--home-text);
 }
@@ -109,6 +115,11 @@ body {
   border: 1px solid rgba(244, 240, 232, 0.14);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
+}
+
+.home-experimental .glass {
+  background: rgba(26, 24, 21, 0.04);
+  border: 1px solid rgba(26, 24, 21, 0.1);
 }
 
 @media (prefers-reduced-motion: reduce) {
