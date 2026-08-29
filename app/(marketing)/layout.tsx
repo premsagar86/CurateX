@@ -11,7 +11,25 @@ const NAV_LINKS = [
   { href: "/process", label: "Process" },
   { href: "/pricing", label: "Pricing" },
   { href: "/blog", label: "Blog" },
+  { href: "/contact", label: "Contact" },
 ];
+
+// Shared marketing nav link: color fades to the brand primary and a hairline
+// underline wipes in from the left on hover / keyboard focus.
+function NavLink({ href, label }: { href: string; label: string }) {
+  return (
+    <Link
+      href={href}
+      className="group relative text-sm font-medium text-white/75 transition-colors duration-200 ease-out hover:text-primary focus-visible:text-primary"
+    >
+      {label}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -bottom-1 left-0 h-px w-0 bg-primary transition-all duration-300 ease-out group-hover:w-full group-focus-visible:w-full"
+      />
+    </Link>
+  );
+}
 
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -19,24 +37,22 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
       <div className="flex min-h-screen flex-col bg-[#0d0b09]">
         <GrainOverlay />
 
-        <header className="sticky top-0 z-[var(--z-sticky,20)] glass px-6 py-4">
+        <header className="sticky top-0 z-[var(--z-sticky,200)] border-b border-white/10 bg-[#0d0b09]/85 px-6 py-4 backdrop-blur-xl transition-colors duration-200">
           <nav className="relative mx-auto flex max-w-container items-center justify-between">
-            <Link href="/" className="font-display text-lg tracking-tight text-primary">
+            <Link
+              href="/"
+              className="font-display text-lg tracking-tight text-primary transition-colors duration-200 ease-out hover:text-primary-hover"
+            >
               forge
             </Link>
 
             <div className="hidden items-center gap-6 md:flex">
               {NAV_LINKS.map((link) => (
-                <Link key={link.href} href={link.href} className="text-sm text-white transition-colors hover:text-primary">
-                  {link.label}
-                </Link>
+                <NavLink key={link.href} href={link.href} label={link.label} />
               ))}
-              <Link href="/contact" className="text-sm text-white transition-colors hover:text-primary">
-                Contact
-              </Link>
               <Link
                 href="/login"
-                className="rounded-full border border-primary/40 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:border-primary hover:bg-primary/10 hover:text-primary"
+                className="rounded-full border border-primary/40 px-4 py-1.5 text-sm font-medium text-white/90 transition-colors duration-200 ease-out hover:border-primary hover:bg-primary/15 hover:text-primary"
               >
                 Log in
               </Link>

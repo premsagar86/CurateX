@@ -25,27 +25,36 @@ export function MobileNav() {
         aria-expanded={open}
         aria-label="Toggle navigation menu"
         onClick={() => setOpen((v) => !v)}
-        className="relative flex h-11 w-11 items-center justify-center rounded-full border border-home-border"
+        className="relative flex h-11 w-11 items-center justify-center rounded-full border border-white/15"
       >
         <span aria-hidden className="relative block h-3.5 w-4">
           <span
-            className={`absolute left-0 top-0 h-0.5 w-4 bg-home-text transition-transform duration-300 ${open ? "translate-y-[7px] rotate-45" : ""}`}
+            className={`absolute left-0 top-0 h-0.5 w-4 bg-white transition-transform duration-300 ${open ? "translate-y-[7px] rotate-45" : ""}`}
           />
           <span
-            className={`absolute left-0 bottom-0 h-0.5 w-4 bg-home-text transition-transform duration-300 ${open ? "-translate-y-[7px] -rotate-45" : ""}`}
+            className={`absolute left-0 bottom-0 h-0.5 w-4 bg-white transition-transform duration-300 ${open ? "-translate-y-[7px] -rotate-45" : ""}`}
           />
         </span>
       </button>
 
       {open && (
-        <div className="glass absolute inset-x-0 top-full px-6 py-4">
+        <div className="absolute inset-x-0 top-full border-b border-white/10 bg-[#0d0b09]/95 px-6 py-4 backdrop-blur-xl">
           <nav className="flex flex-col gap-3">
             {LINKS.map((link) => (
-              <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="py-1 text-home-text">
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setOpen(false)}
+                className="py-1 text-white/80 transition-colors duration-200 ease-out hover:text-primary"
+              >
                 {link.label}
               </Link>
             ))}
-            <Link href="/login" onClick={() => setOpen(false)} className="py-1 font-medium text-home-text">
+            <Link
+              href="/login"
+              onClick={() => setOpen(false)}
+              className="py-1 font-medium text-white/80 transition-colors duration-200 ease-out hover:text-primary"
+            >
               Log in
             </Link>
           </nav>
