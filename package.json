@@ -2,20 +2,20 @@
   "name": "forge-digital",
   "version": "0.1.0",
   "private": true,
-"scripts": {
-  "dev": "next dev",
-  "build": "prisma generate && next build",
-  "vercel-build": "prisma generate && node scripts/vercel-migrate.mjs && next build",
-  "start": "next start",
-  "lint": "next lint",
-  "typecheck": "tsc --noEmit",
-  "prisma:generate": "prisma generate",
-  "prisma:migrate": "prisma migrate dev",
-  "prisma:seed": "tsx prisma/seed.ts"
-},
-"prisma": {
-  "seed": "tsx prisma/seed.ts"
-},
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "vercel-build": "prisma generate && node scripts/vercel-migrate.mjs && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:seed": "tsx prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
     "@prisma/client": "^5.20.0",
@@ -46,5 +46,13 @@
     "tailwindcss": "^3.4.13",
     "tsx": "^4.19.1",
     "typescript": "^5.6.3"
+  },
+  "allowScripts": {
+    "@prisma/client@5.22.0": true,
+    "@prisma/engines@5.22.0": true,
+    "@sentry/cli@2.39.1": true,
+    "esbuild@0.28.2": true,
+    "prisma@5.22.0": true,
+    "unrs-resolver@1.12.2": true
   }
 }
