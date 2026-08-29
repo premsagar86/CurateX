@@ -9,6 +9,9 @@ import { CtaBlock } from "@/components/marketing/cta-block";
 import { services } from "@/config/services";
 import type { ServiceType } from "@prisma/client";
 
+// DB-backed — render per request so `next build` needs no database. See PLAN: CI build fix.
+export const dynamic = "force-dynamic";
+
 export default async function CaseStudyPage({ params }: { params: { slug: string } }) {
   const caseStudy = await db.caseStudy.findUnique({
     where: { slug: params.slug },

@@ -9,12 +9,14 @@ import { ProjectCard } from "@/components/marketing/project-card";
 import { Accordion } from "@/components/ui/accordion";
 import { CtaBlock } from "@/components/marketing/cta-block";
 import { EmptyState } from "@/components/ui/empty-state";
-import { getServiceBySlug, services } from "@/config/services";
+import { getServiceBySlug } from "@/config/services";
 import { packages } from "@/config/packages";
 
-export function generateStaticParams() {
-  return services.map((service) => ({ slug: service.slug }));
-}
+// Reads case studies from the DB — render per request so `next build` needs no
+// database connection. (No generateStaticParams: enumerated params would force
+// build-time prerender of this route, which is exactly what we're avoiding.)
+// See PLAN: CI build fix.
+export const dynamic = "force-dynamic";
 
 export default async function ServicePage({ params }: { params: { slug: string } }) {
   const service = getServiceBySlug(params.slug);

@@ -14,6 +14,10 @@ import { services } from "@/config/services";
 import { packagesByCategory } from "@/config/packages";
 import type { ServiceType } from "@prisma/client";
 
+// Reads case studies / testimonials from the DB — render per request so the
+// build never needs a database connection. See PLAN: CI build fix.
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const [featuredWork, testimonials] = await Promise.all([
     db.caseStudy.findMany({ where: { publishedAt: { not: null } }, orderBy: { publishedAt: "desc" }, take: 3 }),
