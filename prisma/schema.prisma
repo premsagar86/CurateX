@@ -1,9 +1,12 @@
 // prisma/schema.prisma
 // Full schema per site.md §2.1 (Better Auth tables) + §14 (business-domain
-// models). Datasource is PostgreSQL (Neon in production) — see site.md §6.3.
+// models). Datasource migrated to PostgreSQL (Neon) per site.md §6.3 — the
+// pooled connection is DATABASE_URL, the direct (non-pooler) connection used
+// for migrations is DIRECT_URL.
 
 datasource db {
   provider  = "postgresql"
+<<<<<<< HEAD
   url       = env("DATABASE_URL") // pooled connection (Neon -pooler host) — used at runtime
   directUrl = env("DIRECT_URL") // direct connection — used by `prisma migrate` / introspection
 }
