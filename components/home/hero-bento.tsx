@@ -57,7 +57,7 @@ export function HeroBento() {
           { scale: 1, autoAlpha: 1, duration: 1.4, ease: EASE.smooth, stagger: 0.15 }
         );
 
-        gsap.from(".hero-tile, .hero-tile-zoom", {
+        gsap.from(".hero-tile, .hero-tile-zoom, .hero-ghost", {
           autoAlpha: 0,
           y: 40,
           scale: 0.8,
@@ -102,7 +102,7 @@ export function HeroBento() {
             .to(".hero-sub, .hero-cta", { autoAlpha: 0, y: -20, duration: 0.25 }, 0)
             .to(".hero-eyebrow", { autoAlpha: 0, y: -16, duration: 0.25 }, 0)
             .to(tileGridRef.current, { rotate: 0, x: 0, duration: 0.4, ease: EASE.smooth }, 0)
-            .to(".hero-tile", { autoAlpha: 0, scale: 0.6, duration: 0.3, stagger: 0.03 }, 0.05)
+            .to(".hero-tile, .hero-ghost", { autoAlpha: 0, scale: 0.6, duration: 0.3, stagger: 0.03 }, 0.05)
             .to(
               tileRef.current,
               { scale: 22, rotate: 0, borderRadius: 0, duration: 0.7, ease: EASE.smooth },
@@ -178,14 +178,25 @@ export function HeroBento() {
           >
             {HERO_TILES.map((tile, i) =>
               i === ZOOM_INDEX ? (
-                <div
-                  key={tile.label}
-                  ref={tileRef}
-                  className="hero-tile-zoom glass relative z-10 flex aspect-square flex-col items-center justify-center rounded-3xl text-center shadow-glow-accent"
-                >
-                  <div className="tile-label px-4">
-                    <p className="font-display text-3xl text-home-text">{tile.stat}</p>
-                    <p className="mt-1 text-xs uppercase tracking-wide text-home-muted">{tile.label}</p>
+                <div key={tile.label} className="relative z-10 aspect-square">
+                  {/* Background cards — same tile shape and slant as the wall,
+                      stacked behind so the "main" card lifts off the grid. */}
+                  <div
+                    aria-hidden
+                    className="hero-ghost absolute inset-0 translate-x-3 translate-y-4 rotate-2 rounded-3xl border border-home-border bg-home-surface/50"
+                  />
+                  <div
+                    aria-hidden
+                    className="hero-ghost absolute inset-0 -rotate-3 translate-x-6 translate-y-8 rounded-3xl border border-home-border bg-home-surface/30"
+                  />
+                  <div
+                    ref={tileRef}
+                    className="hero-tile-zoom glass absolute inset-0 flex flex-col items-center justify-center rounded-3xl text-center shadow-glow-accent ring-1 ring-accent/40"
+                  >
+                    <div className="tile-label px-4">
+                      <p className="font-display text-3xl text-home-text">{tile.stat}</p>
+                      <p className="mt-1 text-xs uppercase tracking-wide text-home-muted">{tile.label}</p>
+                    </div>
                   </div>
                 </div>
               ) : (

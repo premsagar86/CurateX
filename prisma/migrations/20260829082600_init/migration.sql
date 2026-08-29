@@ -460,3 +460,4 @@ ALTER TABLE "case_study" ADD CONSTRAINT "case_study_testimonialId_fkey" FOREIGN 
 
 -- AddForeignKey
 ALTER TABLE "testimonial" ADD CONSTRAINT "testimonial_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "client"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
