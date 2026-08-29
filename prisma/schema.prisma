@@ -1,11 +1,11 @@
 // prisma/schema.prisma
 // Full schema per site.md §2.1 (Better Auth tables) + §14 (business-domain
-// models). Phase 1 datasource is MySQL (site.md §5.1); swap to
-// "postgresql" per site.md §6.3 for the optional Phase 2 migration.
+// models). Datasource is PostgreSQL (Neon in production) — see site.md §6.3.
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL") // pooled connection (Neon -pooler host) — used at runtime
+  directUrl = env("DIRECT_URL")   // direct connection — used by `prisma migrate` / introspection
 }
 
 generator client {
@@ -417,8 +417,8 @@ model CaseStudy {
   testimonial   Testimonial? @relation(fields: [testimonialId], references: [id])
   title         String
   slug          String       @unique
-  services      Json? // ServiceType[] tags for filtering/linking (§16.5, §20.4) — Json since MySQL
-                      // has no native scalar-list column type Prisma can map ServiceType[] to
+  services      Json? // ServiceType[] tags for filtering/linking (§16.5, §20.4) — kept as Json
+                      // (not a native ServiceType[] array) so app-level casts stay unchanged
   challenge     String       @db.Text
   approach      String       @db.Text
   outcome       String       @db.Text

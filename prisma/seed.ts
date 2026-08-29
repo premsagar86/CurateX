@@ -22,16 +22,25 @@ async function main() {
   ];
 
   for (const founder of founders) {
-    const existing = await db.user.findUnique({ where: { email: founder.email } });
+    // Better Auth lower-cases emails on sign-up; PostgreSQL string comparison is
+    // case-sensitive, so every lookup here must use the normalized form too.
+    const email = founder.email.toLowerCase();
 
-    if (!existing) {
+    let user = await db.user.findUnique({ where: { email } });
+
+    if (!user) {
       await auth.api.signUpEmail({
-        body: { email: founder.email, password: SEED_PASSWORD, name: founder.name },
+        body: { email, password: SEED_PASSWORD, name: founder.name },
       });
+      user = await db.user.findUnique({ where: { email } });
+    }
+
+    if (!user) {
+      throw new Error(`sign-up did not create a user row for ${email}`);
     }
 
     await db.user.update({
-      where: { email: founder.email },
+      where: { email },
       data: { role: UserRole.TEAM, emailVerified: true },
     });
   }
