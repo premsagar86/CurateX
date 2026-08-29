@@ -18,41 +18,49 @@ function ServiceTile({ service, index }: { service: Service; index: number }) {
 
   return (
     <div
-      ref={ref}
-      data-reveal
-      className="group relative flex h-full min-h-[16rem] flex-col overflow-hidden rounded-lg border border-home-border bg-home-surface p-6"
+      className="h-full animate-float"
+      style={{
+        animationDelay: `${(index % 4) * -1.5}s`,
+        animationDuration: `${8 + (index % 3)}s`,
+      }}
     >
-      {/* Cursor-follow highlight. */}
       <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        style={{
-          background: `radial-gradient(260px circle at var(--mx,50%) var(--my,50%), ${GLOW_COLORS[index % GLOW_COLORS.length]}, transparent 70%)`,
-        }}
-      />
-
-      {/* Editorial index numeral — absolutely positioned, cropped off the
-          bottom-right corner, sitting behind the content and printed into the
-          card. Never overlaps the copy (which lives top-left). */}
-      <span
-        aria-hidden
-        className="decor-numeral absolute -bottom-10 -right-4 z-0 text-[8rem]"
+        ref={ref}
+        data-reveal
+        className="group relative flex h-full min-h-[16rem] flex-col overflow-hidden rounded-lg border border-home-border bg-home-surface p-6"
       >
-        {number}
-      </span>
+        {/* Cursor-follow highlight. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          style={{
+            background: `radial-gradient(260px circle at var(--mx,50%) var(--my,50%), ${GLOW_COLORS[index % GLOW_COLORS.length]}, transparent 70%)`,
+          }}
+        />
 
-      {/* Content — fixed order: eyebrow → title → description → action. */}
-      <Link
-        href={`/services/${service.slug}`}
-        className="relative z-[1] flex h-full flex-col focus-visible:outline-none"
-      >
-        <span className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">{number}</span>
-        <h3 className="mt-3 pr-10 font-display text-xl leading-tight text-home-text">{service.name}</h3>
-        <p className="mt-2 line-clamp-2 pr-12 text-sm leading-relaxed text-home-muted">{service.oneLiner}</p>
-        <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-medium text-home-text opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-          Explore <span aria-hidden>&rarr;</span>
+        {/* Editorial index numeral — sits fully inside the card, behind the
+            content and printed into the surface. The copy reserves the right edge
+            (title pr-10, description pr-12) so it never overlaps. */}
+        <span
+          aria-hidden
+          className="decor-numeral absolute bottom-3 right-4 z-0 text-[7rem]"
+        >
+          {number}
         </span>
-      </Link>
+
+        {/* Content — fixed order: eyebrow → title → description → action. */}
+        <Link
+          href={`/services/${service.slug}`}
+          className="relative z-[1] flex h-full flex-col focus-visible:outline-none"
+        >
+          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">{number}</span>
+          <h3 className="mt-3 pr-10 font-display text-xl leading-tight text-home-text">{service.name}</h3>
+          <p className="mt-2 line-clamp-2 pr-12 text-sm leading-relaxed text-home-muted">{service.oneLiner}</p>
+          <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-medium text-home-text opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            Explore <span aria-hidden>&rarr;</span>
+          </span>
+        </Link>
+      </div>
     </div>
   );
 }

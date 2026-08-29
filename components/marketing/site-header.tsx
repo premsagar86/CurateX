@@ -1,6 +1,6 @@
-// Marketing header — fixed height, single z-index, and a subtle
-// backdrop-blur / border that firms up once the page is scrolled. Extracted
-// to a client component so the scroll state lives in one place. PLAN.md §16.6.
+// Marketing header — fixed height, single z-index, solid black bar with a
+// border/shadow that firms up once the page is scrolled. Extracted to a client
+// component so the scroll state lives in one place. PLAN.md §16.6.
 "use client";
 
 import Link from "next/link";
@@ -44,16 +44,16 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`sticky top-0 z-[var(--z-header)] h-[var(--nav-h)] border-b backdrop-blur-xl transition-[background-color,border-color,box-shadow] duration-300 ease-out ${
+      className={`sticky top-0 z-[var(--z-header)] h-[var(--nav-h)] border-b bg-[#0d0b09] transition-[border-color,box-shadow] duration-300 ease-out ${
         scrolled
-          ? "border-white/10 bg-[#0d0b09]/92 shadow-[0_1px_0_0_rgba(255,255,255,0.04),0_12px_30px_-18px_rgba(0,0,0,0.6)]"
-          : "border-white/5 bg-[#0d0b09]/80"
+          ? "border-white/10 shadow-[0_1px_0_0_rgba(255,255,255,0.04),0_12px_30px_-18px_rgba(0,0,0,0.6)]"
+          : "border-white/5"
       }`}
     >
       <nav className="relative mx-auto flex h-full max-w-container items-center justify-between px-6">
         <Link
           href="/"
-          className="font-display text-lg tracking-tight text-primary transition-colors duration-200 ease-out hover:text-primary-hover focus-visible:outline-none"
+          className="font-display text-2xl font-bold tracking-tight text-primary transition-colors duration-200 ease-out hover:text-primary-hover focus-visible:outline-none"
         >
           forge
         </Link>

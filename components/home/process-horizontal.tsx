@@ -26,7 +26,13 @@ export function ProcessHorizontal() {
 
       mm.add(PIN_QUERY, () => {
         const track = trackRef.current!;
-        const distance = track.scrollWidth - window.innerWidth;
+        // The track sits inside a centered max-w-container + px-6 wrapper, so its
+        // left edge is inset from the viewport. Translating by only
+        // scrollWidth - innerWidth leaves the last card clipped by that inset, so
+        // add the track's own left offset plus a trailing gutter.
+        const trailingGutter = 32;
+        const trackLeft = track.getBoundingClientRect().left;
+        const distance = track.scrollWidth - window.innerWidth + trackLeft + trailingGutter;
         if (distance <= 0) return;
 
         // Baseline markup is a natively-scrollable row (works with no JS at
