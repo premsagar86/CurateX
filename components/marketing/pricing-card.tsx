@@ -7,11 +7,27 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { Package } from "@/config/packages";
 
+// Renders "Premium Website / E-commerce" as two clean lines instead of an
+// awkward mid-slash wrap.
+function PlanName({ name }: { name: string }) {
+  if (!name.includes(" / ")) return <>{name}</>;
+  const [first, second] = name.split(" / ");
+  return (
+    <>
+      {first}
+      <br />
+      <span className="text-text-muted">/ {second}</span>
+    </>
+  );
+}
+
 export function PricingCard({ pkg }: { pkg: Package }) {
   return (
     <Card className="flex h-full flex-col">
       <p className="text-sm font-semibold uppercase tracking-wide text-primary">{pkg.tier}</p>
-      <h3 className="mt-1 font-display text-xl">{pkg.name}</h3>
+      <h3 className="mt-1 min-h-[3.5rem] font-display text-xl leading-tight">
+        <PlanName name={pkg.name} />
+      </h3>
       <p className="mt-3 text-2xl font-semibold">
         {pkg.priceInRupees !== null ? `₹${pkg.priceInRupees.toLocaleString("en-IN")}` : "Custom quote"}
         {pkg.cadence === "monthly" && pkg.priceInRupees !== null && (
@@ -43,7 +59,8 @@ export function PricingCard({ pkg }: { pkg: Package }) {
         </details>
       )}
 
-      <Link href="/contact" className={cn(buttonVariants(), "mt-6")}>
+      <div className="mt-6 flex-none" />
+      <Link href="/contact" className={cn(buttonVariants(), "mt-auto w-full")}>
         Get a quote
       </Link>
     </Card>

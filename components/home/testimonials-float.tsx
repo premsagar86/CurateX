@@ -23,26 +23,26 @@ export function TestimonialsFloat({ testimonials }: { testimonials: TestimonialI
   if (testimonials.length === 0) return null;
 
   return (
-    <section className="relative overflow-hidden px-6 py-24 md:py-32">
+    <section className="section-y relative overflow-hidden px-6">
       <span
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-8 -translate-x-1/2 select-none font-display text-ghost text-black/[0.04]"
+        className="decor-numeral pointer-events-none absolute right-6 top-0 text-ghost text-home-text/[0.03]"
       >
         &ldquo;
       </span>
 
       <div className="relative mx-auto max-w-container">
-        <div className="mb-12 max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Clients</p>
-          <h2 className="mt-3 font-display text-display-2 text-home-text">What it&apos;s like to work with us</h2>
+        <div className="mb-14 max-w-2xl">
+          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-primary">Clients</p>
+          <h2 className="mt-4 font-display text-display-2 text-home-text">What it&apos;s like to work with us</h2>
         </div>
 
-        <div ref={containerRef} className="grid gap-6 md:grid-cols-2">
+        <div ref={containerRef} className="grid gap-5 md:grid-cols-2">
           {testimonials.map((testimonial, index) => (
             <figure
               key={testimonial.id}
               data-reveal
-              className={`glass motion-decor rounded-[2rem] p-8 ${index % 2 ? "animate-float md:mt-10" : ""}`}
+              className={`glass motion-decor rounded-lg p-8 ${index % 2 ? "animate-float md:mt-10" : ""}`}
             >
               <blockquote className="font-display text-xl text-home-text md:text-2xl">
                 &ldquo;{testimonial.quote}&rdquo;

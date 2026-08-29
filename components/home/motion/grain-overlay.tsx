@@ -13,7 +13,7 @@ export function GrainOverlay() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-0 z-[999] opacity-[0.05] mix-blend-overlay"
+      className="pointer-events-none fixed inset-0 z-[var(--z-grain)] opacity-[0.04] mix-blend-overlay"
       style={{ backgroundImage: `url("${GRAIN_SVG}")`, backgroundSize: "160px 160px" }}
     />
   );

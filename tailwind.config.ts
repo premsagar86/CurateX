@@ -65,30 +65,31 @@ export default {
         "display-1": ["clamp(3rem, 9vw, 8.5rem)", { lineHeight: "0.92", letterSpacing: "-0.03em" }],
         "display-2": ["clamp(2.25rem, 5.5vw, 4.5rem)", { lineHeight: "0.95", letterSpacing: "-0.02em" }],
         "display-3": ["clamp(1.75rem, 3.5vw, 2.75rem)", { lineHeight: "1", letterSpacing: "-0.01em" }],
-        ghost: ["clamp(7rem, 24vw, 22rem)", { lineHeight: "0.85" }],
+        ghost: ["clamp(5rem, 20vw, 20rem)", { lineHeight: "0.82" }],
       },
       boxShadow: {
-        "glow-primary": "0 0 0 1px rgba(217,98,43,0.35), 0 20px 60px -15px rgba(217,98,43,0.45)",
-        "glow-accent": "0 0 0 1px rgba(242,169,59,0.35), 0 20px 60px -15px rgba(242,169,59,0.45)",
+        // Restrained warm drop only — no hard 1px ring, no wide bloom.
+        "glow-primary": "0 22px 50px -24px rgba(217,98,43,0.38)",
+        "glow-accent": "0 22px 50px -24px rgba(242,169,59,0.32)",
       },
       keyframes: {
         float: {
           "0%, 100%": { transform: "translate3d(0,0,0)" },
-          "50%": { transform: "translate3d(0,-18px,0)" },
+          "50%": { transform: "translate3d(0,-11px,0)" },
         },
         drift: {
           "0%, 100%": { transform: "translate3d(0,0,0) rotate(0deg)" },
-          "50%": { transform: "translate3d(14px,10px,0) rotate(4deg)" },
+          "50%": { transform: "translate3d(9px,7px,0) rotate(2deg)" },
         },
         "pulse-glow": {
-          "0%, 100%": { opacity: "0.6", transform: "scale(1)" },
-          "50%": { opacity: "1", transform: "scale(1.08)" },
+          "0%, 100%": { opacity: "0.55", transform: "scale(1)" },
+          "50%": { opacity: "0.8", transform: "scale(1.04)" },
         },
       },
       animation: {
-        float: "float 6s ease-in-out infinite",
-        drift: "drift 9s ease-in-out infinite",
-        "pulse-glow": "pulse-glow 3.5s ease-in-out infinite",
+        float: "float 9s ease-in-out infinite",
+        drift: "drift 13s ease-in-out infinite",
+        "pulse-glow": "pulse-glow 5s ease-in-out infinite",
       },
     },
   },

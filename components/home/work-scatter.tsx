@@ -11,8 +11,8 @@ export interface WorkItem {
   services: string[];
 }
 
-const ROTATIONS = ["md:-rotate-2", "md:rotate-1", "md:-rotate-1"];
-const SPANS = ["md:col-span-3 md:row-span-2", "md:col-span-3 md:mt-16", "md:col-span-3 md:mt-6"];
+const ROTATIONS = ["md:-rotate-1", "md:rotate-1", "md:-rotate-1"];
+const SPANS = ["md:col-span-3 md:row-span-2", "md:col-span-3 md:mt-12", "md:col-span-3 md:mt-4"];
 
 function gradientFor(title: string) {
   const hash = [...title].reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
@@ -77,14 +77,14 @@ export function WorkScatter({ items }: { items: WorkItem[] }) {
   }, [items]);
 
   return (
-    <section className="relative mx-auto max-w-container px-6 py-24 md:py-32 [perspective:1400px]">
-      <div className="mb-12 max-w-2xl">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Work</p>
-        <h2 className="mt-3 font-display text-display-2 text-home-text">Recent projects</h2>
+    <section className="section-y relative mx-auto max-w-container px-6 [perspective:1400px]">
+      <div className="mb-14 max-w-2xl">
+        <p className="text-sm font-semibold uppercase tracking-[0.22em] text-primary">Work</p>
+        <h2 className="mt-4 font-display text-display-2 text-home-text">Recent projects</h2>
       </div>
 
       {items.length === 0 ? (
-        <div className="glass flex min-h-[40vh] flex-col items-center justify-center rounded-[2rem] px-6 text-center">
+        <div className="glass flex min-h-[40vh] flex-col items-center justify-center rounded-lg px-6 text-center">
           <p className="font-display text-display-3 text-home-text">First case studies coming soon</p>
           <p className="mt-3 max-w-sm text-home-muted">
             We&apos;re just getting started — check back soon, or see our current process instead.
@@ -96,7 +96,7 @@ export function WorkScatter({ items }: { items: WorkItem[] }) {
             <Link
               key={item.id}
               href={`/work/${item.slug}`}
-              className={`work-card group relative flex aspect-video flex-col justify-end overflow-hidden rounded-[2rem] border border-home-border p-6 ${SPANS[index % SPANS.length]} ${ROTATIONS[index % ROTATIONS.length]}`}
+              className={`work-card group relative flex aspect-video flex-col justify-end overflow-hidden rounded-lg border border-home-border p-6 ${SPANS[index % SPANS.length]} ${ROTATIONS[index % ROTATIONS.length]}`}
               style={{ backgroundImage: gradientFor(item.title) }}
             >
               <div className="absolute inset-0 bg-black/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />

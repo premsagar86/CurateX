@@ -22,25 +22,25 @@ export function CtaFinale() {
 
       mm.add(MOTION_OK_QUERY, () => {
         gsap.to(shapeARef.current, {
-          yPercent: -40,
-          rotate: 25,
+          yPercent: -26,
+          rotate: 10,
           ease: "none",
           scrollTrigger: { trigger: sectionRef.current, start: "top bottom", end: "bottom top", scrub: 0.8 },
         });
         gsap.to(shapeBRef.current, {
-          yPercent: 35,
-          rotate: -20,
+          yPercent: 22,
+          rotate: -8,
           ease: "none",
           scrollTrigger: { trigger: sectionRef.current, start: "top bottom", end: "bottom top", scrub: 1.2 },
         });
         gsap.fromTo(
           headlineRef.current,
-          { scale: 0.85, autoAlpha: 0 },
+          { scale: 0.92, autoAlpha: 0 },
           {
             scale: 1,
             autoAlpha: 1,
             ease: "none",
-            scrollTrigger: { trigger: sectionRef.current, start: "top 80%", end: "top 30%", scrub: 0.6 },
+            scrollTrigger: { trigger: sectionRef.current, start: "top 80%", end: "top 35%", scrub: 0.6 },
           }
         );
       });
@@ -52,31 +52,32 @@ export function CtaFinale() {
   return (
     <section
       ref={sectionRef}
-      className="relative isolate flex min-h-[90svh] flex-col items-center justify-center overflow-hidden px-6 text-center"
+      className="section-y relative isolate flex min-h-[70svh] flex-col items-center justify-center overflow-hidden px-6 text-center"
     >
       <div
         ref={shapeARef}
         aria-hidden
-        className="motion-decor absolute -left-10 top-10 h-64 w-64 rounded-[2rem] border border-secondary/60 bg-home-bg/60 backdrop-blur-sm md:h-80 md:w-80"
-        style={{ zIndex: 20 }}
+        className="decor-panel motion-decor absolute -left-10 top-10 z-[var(--z-decor)] h-56 w-56 md:h-72 md:w-72"
       />
       <div
         ref={shapeBRef}
         aria-hidden
-        className="motion-decor absolute -right-16 bottom-10 h-72 w-72 animate-pulse-glow rounded-full bg-accent/20 blur-3xl"
-        style={{ zIndex: 0 }}
+        className="motion-decor absolute -right-16 bottom-10 z-[var(--z-decor)] h-72 w-72 animate-pulse-glow rounded-full bg-accent/12 blur-3xl"
       />
 
-      <h2 ref={headlineRef} className="relative z-10 max-w-3xl font-display text-display-1 text-home-text">
+      <h2
+        ref={headlineRef}
+        className="relative z-[var(--z-content)] max-w-2xl text-balance font-display text-display-1 text-home-text"
+      >
         Ready to talk about your project?
       </h2>
-      <p className="relative z-10 mx-auto mt-6 max-w-md text-lg text-home-muted">
+      <p className="relative z-[var(--z-content)] mx-auto mt-6 max-w-md text-lg leading-relaxed text-home-muted">
         Tell us what you&apos;re building — we&apos;ll respond within one business day.
       </p>
       <Link
         ref={ctaRef}
         href="/contact"
-        className="relative z-10 mt-10 inline-flex h-16 items-center justify-center rounded-full bg-primary px-10 text-lg font-semibold text-white shadow-glow-primary hover:bg-primary-hover"
+        className="btn-pill btn-pill-lg btn-pill-primary is-magnetic relative z-[var(--z-content)] mt-10"
       >
         Get a quote
       </Link>

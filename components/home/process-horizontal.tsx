@@ -62,33 +62,36 @@ export function ProcessHorizontal() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden py-24 md:h-screen md:py-0">
+    <section ref={sectionRef} className="relative overflow-hidden py-20 md:h-screen md:py-0">
       <div className="mx-auto flex h-full max-w-container flex-col justify-center px-6">
-        <div className="mb-10">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">How it works</p>
-          <h2 className="mt-3 font-display text-display-2 text-home-text">A process you can actually see</h2>
+        <div className="mb-12">
+          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-primary">How it works</p>
+          <h2 className="mt-4 font-display text-display-2 text-home-text">A process you can actually see</h2>
         </div>
 
-        <div ref={trackRef} className="flex gap-6 overflow-x-auto pb-4" style={{ willChange: "transform" }}>
+        <div ref={trackRef} className="flex gap-5 overflow-x-auto pb-4" style={{ willChange: "transform" }}>
           {STEPS.map((step, index) => (
             <div
               key={step.title}
-              className="process-card glass w-[80vw] shrink-0 rounded-[2rem] p-8 sm:w-[420px] md:w-[38vw] lg:w-[30vw]"
+              className="process-card glass flex w-[78vw] shrink-0 flex-col rounded-lg p-8 sm:w-[400px] md:w-[36vw] lg:w-[28vw]"
             >
-              <span className="font-display text-6xl text-primary/70">0{index + 1}</span>
-              <p className="mt-4 font-display text-2xl text-home-text">{step.title}</p>
-              <p className="mt-3 text-home-muted">{step.copy}</p>
+              <span className="font-display text-6xl leading-none text-primary/45">0{index + 1}</span>
+              <p className="mt-5 font-display text-2xl text-home-text">{step.title}</p>
+              <p className="mt-3 leading-relaxed text-home-muted">{step.copy}</p>
             </div>
           ))}
         </div>
 
-        <div className="mt-8 hidden h-px w-full bg-home-border md:block">
+        <div className="mt-10 hidden h-px w-full bg-home-border md:block">
           <div ref={progressRef} className="h-full w-0 bg-primary transition-[width]" />
         </div>
 
         <p className="mt-8">
-          <Link href="/process" className="text-sm font-medium text-home-text underline">
-            See the full process →
+          <Link
+            href="/process"
+            className="text-sm font-medium text-home-text underline underline-offset-4 hover:text-primary"
+          >
+            See the full process &rarr;
           </Link>
         </p>
       </div>

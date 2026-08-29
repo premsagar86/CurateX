@@ -17,10 +17,10 @@ export function CtaBlock({
   ctaHref?: string;
 }) {
   return (
-    <div className="mx-auto max-w-container px-6 py-16 text-center">
-      <h2 className="font-display text-2xl md:text-3xl">{heading}</h2>
-      <p className="mx-auto mt-3 max-w-md text-text-muted">{support}</p>
-      <Link href={ctaHref} className={cn(buttonVariants({ size: "lg" }), "mt-6")}>
+    <div className="section-y mx-auto max-w-container px-6 text-center">
+      <h2 className="text-balance font-display text-2xl md:text-3xl">{heading}</h2>
+      <p className="mx-auto mt-3 max-w-md leading-relaxed text-text-muted">{support}</p>
+      <Link href={ctaHref} className={cn(buttonVariants({ size: "lg" }), "mt-8 rounded-full px-8")}>
         {ctaLabel}
       </Link>
     </div>

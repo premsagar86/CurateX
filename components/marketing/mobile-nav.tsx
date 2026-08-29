@@ -25,7 +25,7 @@ export function MobileNav() {
         aria-expanded={open}
         aria-label="Toggle navigation menu"
         onClick={() => setOpen((v) => !v)}
-        className="relative flex h-11 w-11 items-center justify-center rounded-full border border-white/15"
+        className="relative flex h-10 w-10 items-center justify-center rounded-full border border-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
       >
         <span aria-hidden className="relative block h-3.5 w-4">
           <span
@@ -38,7 +38,7 @@ export function MobileNav() {
       </button>
 
       {open && (
-        <div className="absolute inset-x-0 top-full border-b border-white/10 bg-[#0d0b09]/95 px-6 py-4 backdrop-blur-xl">
+        <div className="absolute inset-x-0 top-full z-[var(--z-drawer)] max-h-[calc(100svh_-_var(--nav-h))] overflow-y-auto border-b border-white/10 bg-[#0d0b09]/95 px-6 py-5 backdrop-blur-xl">
           <nav className="flex flex-col gap-3">
             {LINKS.map((link) => (
               <Link

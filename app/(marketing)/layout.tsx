@@ -1,73 +1,22 @@
 // Marketing site shell — nav + footer. PLAN.md §16.6, §25.1.
 import Link from "next/link";
-import { MobileNav } from "@/components/marketing/mobile-nav";
+import { SiteHeader } from "@/components/marketing/site-header";
 import { SmoothScrollProvider } from "@/components/home/motion/smooth-scroll-provider";
 import { GrainOverlay } from "@/components/home/motion/grain-overlay";
-
-const NAV_LINKS = [
-  { href: "/services", label: "Services" },
-  { href: "/work", label: "Work" },
-  { href: "/about", label: "About" },
-  { href: "/process", label: "Process" },
-  { href: "/pricing", label: "Pricing" },
-  { href: "/blog", label: "Blog" },
-  { href: "/contact", label: "Contact" },
-];
-
-// Shared marketing nav link: color fades to the brand primary and a hairline
-// underline wipes in from the left on hover / keyboard focus.
-function NavLink({ href, label }: { href: string; label: string }) {
-  return (
-    <Link
-      href={href}
-      className="group relative text-sm font-medium text-white/75 transition-colors duration-200 ease-out hover:text-primary focus-visible:text-primary"
-    >
-      {label}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -bottom-1 left-0 h-px w-0 bg-primary transition-all duration-300 ease-out group-hover:w-full group-focus-visible:w-full"
-      />
-    </Link>
-  );
-}
 
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
     <SmoothScrollProvider>
       <div className="flex min-h-screen flex-col bg-[#0d0b09]">
         <GrainOverlay />
-
-        <header className="sticky top-0 z-[var(--z-sticky,200)] border-b border-white/10 bg-[#0d0b09]/85 px-6 py-4 backdrop-blur-xl transition-colors duration-200">
-          <nav className="relative mx-auto flex max-w-container items-center justify-between">
-            <Link
-              href="/"
-              className="font-display text-lg tracking-tight text-primary transition-colors duration-200 ease-out hover:text-primary-hover"
-            >
-              forge
-            </Link>
-
-            <div className="hidden items-center gap-6 md:flex">
-              {NAV_LINKS.map((link) => (
-                <NavLink key={link.href} href={link.href} label={link.label} />
-              ))}
-              <Link
-                href="/login"
-                className="rounded-full border border-primary/40 px-4 py-1.5 text-sm font-medium text-white/90 transition-colors duration-200 ease-out hover:border-primary hover:bg-primary/15 hover:text-primary"
-              >
-                Log in
-              </Link>
-            </div>
-
-            <MobileNav />
-          </nav>
-        </header>
+        <SiteHeader />
 
         <main className="flex-1 bg-background">{children}</main>
 
         <footer className="relative overflow-hidden border-t border-home-border bg-[#0d0b09] px-6 py-16 text-sm text-home-muted">
           <span
             aria-hidden
-            className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 select-none whitespace-nowrap font-display text-ghost text-white/[0.05]"
+            className="decor-numeral pointer-events-none absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap text-ghost text-white/[0.03]"
           >
             forge
           </span>
