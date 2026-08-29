@@ -2,6 +2,7 @@
 // PLAN.md §31.1, §18.4. Generates a signed, time-limited invite link (§37.2).
 import { randomBytes } from "crypto";
 import { db } from "@/lib/db";
+import { getBaseUrl } from "@/lib/base-url";
 
 const INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
@@ -22,7 +23,7 @@ export async function createClientInvite(clientId: string, email: string) {
     },
   });
 
-  const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}/signup?token=${token}&email=${encodeURIComponent(normalizedEmail)}`;
+  const inviteUrl = `${getBaseUrl()}/signup?token=${token}&email=${encodeURIComponent(normalizedEmail)}`;
 
   // No transactional email provider is wired up yet (features/notifications/dispatch.ts
   // has the same TODO) — log the link so it's visible in dev/server logs, and return it
