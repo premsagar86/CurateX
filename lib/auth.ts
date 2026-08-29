@@ -2,11 +2,15 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { db } from "@/lib/db";
+import { getBaseUrl, getTrustedOrigins } from "@/lib/base-url";
 
 export const auth = betterAuth({
-  baseURL: process.env.NEXT_PUBLIC_APP_URL,
+  // Resolved from Vercel's env when NEXT_PUBLIC_APP_URL is unset/stale, so a
+  // deploy doesn't 500 on an origin-check mismatch. See lib/base-url.ts.
+  baseURL: getBaseUrl(),
+  trustedOrigins: getTrustedOrigins(),
   database: prismaAdapter(db, {
-    provider: "mysql", // "postgresql" after the Phase 2 DB migration (site.md §6.3)
+    provider: "postgresql",
   }),
   emailAndPassword: {
     enabled: true,

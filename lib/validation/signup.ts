@@ -6,7 +6,9 @@ import { z } from "zod";
 export const signupSchema = z
   .object({
     token: z.string().min(1),
-    email: z.string().email(),
+    // Lower-cased to match Better Auth's own normalization — PostgreSQL lookups
+    // by email are case-sensitive, so client and server must agree on the form.
+    email: z.string().email().toLowerCase(),
     name: z.string().min(1).max(100),
     password: z.string().min(8),
     confirmPassword: z.string().min(8),

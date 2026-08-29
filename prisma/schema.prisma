@@ -419,8 +419,8 @@ model CaseStudy {
   testimonial   Testimonial? @relation(fields: [testimonialId], references: [id])
   title         String
   slug          String       @unique
-  services      Json? // ServiceType[] tags for filtering/linking (§16.5, §20.4) — Json since MySQL
-                      // has no native scalar-list column type Prisma can map ServiceType[] to
+  services      Json? // ServiceType[] tags for filtering/linking (§16.5, §20.4) — kept as Json
+                      // (not a native ServiceType[] array) so app-level casts stay unchanged
   challenge     String       @db.Text
   approach      String       @db.Text
   outcome       String       @db.Text
