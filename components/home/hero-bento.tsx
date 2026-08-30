@@ -177,11 +177,11 @@ export function HeroBento() {
           delay: 0.3,
         });
 
-        // Signature moment: one unbroken, scroll-driven push-in aimed at the
-        // highlighted "8 / services, one team" tile. The field scales toward
-        // that card for the whole pin — it never stops — and the card's words
-        // cross-dissolve into the "Eight services, one accountable team"
-        // section title, which is what you land on. No hard cut.
+        // Signature moment: a single smooth zoom into the glowing "8 /
+        // services, one team" tile. As soon as you scroll the copy lifts
+        // away, then the whole field zooms toward that card for the rest of
+        // the pin, landing on the "Eight services, one accountable team"
+        // header.
         if (
           sectionRef.current &&
           tileGridRef.current &&
@@ -197,58 +197,74 @@ export function HeroBento() {
           const originX = (((cellRect.left + cellRect.width / 2) - gridRect.left) / gridRect.width) * 100;
           const originY = (((cellRect.top + cellRect.height / 2) - gridRect.top) / gridRect.height) * 100;
           gsap.set(tileGridRef.current, { transformOrigin: `${originX}% ${originY}%` });
-          gsap.set(contentRef.current, { transformOrigin: "50% 50%" });
-          gsap.set(focalCellRef.current, { transformOrigin: "50% 50%" });
+
+          // Total zoom on the focal card. Grown as K^progress (below) rather
+          // than linearly, so the *perceived* speed stays constant instead
+          // of rushing at the end — that end-rush was the awkward part.
+          const K = 26;
+          const expoZoom = (p: number) => (Math.pow(K, p) - 1) / (K - 1);
 
           const tl = gsap.timeline({
             scrollTrigger: {
               trigger: sectionRef.current,
               start: "top top",
-              end: "+=170%",
-              scrub: 1,
+              // Short pin: one flick of the wheel and `snap` runs the whole
+              // thing automatically — fast — then drops you at the top of the
+              // next section. No long scrubbed drag.
+              end: "+=65%",
+              scrub: 0.35,
               pin: true,
               pinSpacing: true,
               anticipatePin: 1,
               invalidateOnRefresh: true,
+              snap: {
+                snapTo: [0, 1],
+                duration: { min: 0.2, max: 0.45 },
+                ease: "power2.inOut",
+                delay: 0.03,
+                directional: true,
+              },
             },
           });
 
-          // Continuous zoom: linear scale across the whole pin so it tracks
-          // the scrollbar 1:1 and never eases to a halt mid-move. The field
-          // scale flings the (now tiny, denser) tiles off-screen; the focal
-          // cell takes an extra scale of its own so it still fills the frame
-          // exactly as before despite being a quarter the size.
-          tl.to(tileGridRef.current, { scale: 11, ease: "none", duration: 1 }, 0)
-            .to(focalCellRef.current, { scale: 2.4, ease: "none", duration: 1 }, 0)
-            .to(contentRef.current, { scale: 1.5, autoAlpha: 0, ease: "power1.in", duration: 0.4 }, 0)
-            .to([washRef.current, glowRef.current, ghostRef.current], { autoAlpha: 0, duration: 0.35 }, 0)
-            .to(".hero-tile, .hero-ghost", { autoAlpha: 0, duration: 0.3, stagger: 0.02 }, 0.04)
-            // The focal card sheds its frame so no giant panel edge sweeps the
-            // screen — it just becomes the space we move into.
+          // 1 — the copy clears out immediately: a clean lift-and-fade, no
+          //     scaling along with the field, so focus jumps to the cards.
+          tl.to(contentRef.current, { autoAlpha: 0, y: -48, ease: "power2.in", duration: 0.14 }, 0)
+            .to([washRef.current, glowRef.current, ghostRef.current], { autoAlpha: 0, ease: "power1.in", duration: 0.18 }, 0)
+
+            // 2 — one continuous, exponential zoom for the whole pin.
+            .to(tileGridRef.current, { scale: K, ease: expoZoom, duration: 1 }, 0)
+
+            // 3 — the other cards stay lit while they sail out past the frame
+            //     (that fly-past is the moment); fade only the residue late.
+            .to(".hero-ghost", { autoAlpha: 0, duration: 0.15 }, 0.12)
+            .to(".hero-tile", { autoAlpha: 0, ease: "power1.in", duration: 0.28 }, 0.48)
+
+            // 4 — focal card drops its frame once an edge would sweep the
+            //     screen; it just becomes the space we move into.
             .to(
               tileRef.current,
               {
                 backgroundColor: "rgba(0,0,0,0)",
                 borderColor: "rgba(0,0,0,0)",
                 boxShadow: "0px 0px 0px rgba(0,0,0,0)",
-                duration: 0.3,
+                duration: 0.28,
               },
-              0.16
+              0.42
             )
-            // Reveal strengthens while the card is still growing (overlap, no
-            // gap); the card's own label fades on the same stretch so the
-            // wording is continuous rather than swapped.
+            .to(".tile-label", { autoAlpha: 0, duration: 0.28 }, 0.48)
+
+            // 5 — land on the Services header: fades up while the field is
+            //     still growing (no empty beat), then clears for the real
+            //     section on unpin.
             .fromTo(
               revealRef.current,
-              { autoAlpha: 0, scale: 1.08 },
-              { autoAlpha: 1, scale: 1, ease: "none", duration: 0.5 },
-              0.28
+              { autoAlpha: 0, scale: 1.06 },
+              { autoAlpha: 1, scale: 1, ease: "power2.out", duration: 0.3 },
+              0.55
             )
-            .to(".tile-label", { autoAlpha: 0, duration: 0.32 }, 0.3)
-            // Field keeps scaling under the reveal, then clears; reveal hands
-            // straight off to the real Services header on unpin.
-            .to(tileGridRef.current, { autoAlpha: 0, duration: 0.25 }, 0.72)
-            .to(revealRef.current, { autoAlpha: 0, duration: 0.13 }, 0.9);
+            .to(tileGridRef.current, { autoAlpha: 0, duration: 0.18 }, 0.82)
+            .to(revealRef.current, { autoAlpha: 0, duration: 0.12 }, 0.9);
         }
 
         return () => {
