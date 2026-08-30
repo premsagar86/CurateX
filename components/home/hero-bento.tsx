@@ -22,7 +22,6 @@ const HERO_TILES = [
   { stat: "12yr", label: "of craft" },
   { stat: "40+", label: "active clients" },
   { stat: "24h", label: "reply time" },
-  { stat: "8", label: "services, one team" },
   { stat: "98%", label: "retention rate" },
   { stat: "0", label: "outsourced work" },
   { stat: "200+", label: "launches shipped" },
@@ -33,16 +32,28 @@ const HERO_TILES = [
   { stat: "10k", label: "hours shipped" },
   { stat: "48h", label: "first draft" },
   { stat: "90d", label: "support window" },
-  { stat: "0", label: "surprise invoices" },
   { stat: "1:1", label: "client comms" },
+  // ZOOM_INDEX — the glowing card. Kept near the middle of the field so the
+  // scroll zoom pushes straight into it rather than off toward a corner.
+  { stat: "8", label: "services, one team" },
+  { stat: "0", label: "surprise invoices" },
   { stat: "5★", label: "review average" },
   { stat: "100%", label: "own your code" },
   { stat: "6", label: "week max scope" },
   { stat: "24/7", label: "uptime watch" },
+  { stat: "3", label: "concept routes" },
+  { stat: "0", label: "hidden fees" },
+  { stat: "100%", label: "responsive" },
+  { stat: "15+", label: "industries" },
+  { stat: "99.9%", label: "uptime" },
+  { stat: "1wk", label: "design sprint" },
+  { stat: "2x", label: "faster launch" },
+  { stat: "7", label: "day check-ins" },
+  { stat: "∞", label: "care after launch" },
+  { stat: "1", label: "project lead" },
+  { stat: "A+", label: "perf budget" },
 ];
-// Top row, toward the right at every breakpoint — clear of the left-aligned
-// headline while still part of the field.
-const ZOOM_INDEX = 7;
+const ZOOM_INDEX = 18;
 
 // The scattered field + the pinned "becoming" moment are desktop-only. On
 // phones the field is display:none, and pinning the section for ~2 extra
