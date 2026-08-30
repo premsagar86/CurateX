@@ -6,6 +6,7 @@
 // full band apart, so nothing overlaps. Same layout at every screen — the
 // container just gets taller (more room per step) as it narrows, and the
 // type / badge sizes step down. Marketing-only; the portal keeps <Timeline>.
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 export interface RoadmapStep {
