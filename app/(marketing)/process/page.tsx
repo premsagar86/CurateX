@@ -1,9 +1,9 @@
 // Process — PLAN.md §20.7.
 import { Section } from "@/components/ui/section";
-import { Timeline, type TimelineStep } from "@/components/ui/timeline";
+import { ProcessRoadmap, type RoadmapStep } from "@/components/marketing/process-roadmap";
 import { CtaBlock } from "@/components/marketing/cta-block";
 
-const STEPS: TimelineStep[] = [
+const STEPS: RoadmapStep[] = [
   { label: "Discovery", description: "We learn your goals, audience, and scope before anything is designed.", status: "complete" },
   { label: "Proposal", description: "A clear, written scope and price — no surprise invoices later.", status: "complete" },
   { label: "Kickoff", description: "Your portal is set up and milestones are scheduled.", status: "complete" },
@@ -17,8 +17,8 @@ const STEPS: TimelineStep[] = [
 export default function ProcessPage() {
   return (
     <>
-      <Section heading="Our process" body="A visible, step-by-step process — not a black box between kickoff and delivery.">
-        <Timeline steps={STEPS} />
+      <Section heading="Our process" body="A visible, step-by-step roadmap — not a black box between kickoff and delivery.">
+        <ProcessRoadmap steps={STEPS} />
       </Section>
 
       <Section
