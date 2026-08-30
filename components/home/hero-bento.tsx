@@ -289,7 +289,7 @@ export function HeroBento() {
                   />
                   <div
                     ref={tileRef}
-                    className="hero-tile-zoom glass absolute inset-0 flex flex-col items-center justify-center rounded-md text-center shadow-glow-accent ring-1 ring-accent/25"
+                    className="hero-tile-zoom glass absolute inset-0 flex flex-col items-center justify-center rounded-md text-center shadow-glow-accent ring-1 ring-accent/45"
                   >
                     <div className="tile-label px-1">
                       <p className="font-display text-sm leading-none text-home-text">{tile.stat}</p>
