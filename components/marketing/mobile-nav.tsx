@@ -45,7 +45,7 @@ export function MobileNav() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="py-1 text-white/80 transition-colors duration-200 ease-out hover:text-primary"
+                className="py-1 text-white/80 font-extrabold transition-colors duration-200 ease-out hover:text-primary"
               >
                 {link.label}
               </Link>
@@ -53,7 +53,7 @@ export function MobileNav() {
             <Link
               href="/login"
               onClick={() => setOpen(false)}
-              className="py-1 font-medium text-white/80 transition-colors duration-200 ease-out hover:text-primary"
+              className="py-1 font-extrabold text-white/80 transition-colors duration-200 ease-out hover:text-primary"
             >
               Log in
             </Link>
