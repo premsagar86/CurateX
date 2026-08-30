@@ -1,0 +1,4 @@
+# Keep generated SQL migrations LF so Prisma's migration checksums stay stable
+# across machines (Windows autocrlf would otherwise rewrite them on checkout).
+prisma/migrations/**/*.sql text eol=lf
+ 

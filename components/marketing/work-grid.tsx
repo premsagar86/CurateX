@@ -8,7 +8,9 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { services } from "@/config/services";
 import type { CaseStudy, ServiceType } from "@prisma/client";
 
-export function WorkGrid({ caseStudies }: { caseStudies: CaseStudy[] }) {
+type WorkGridCaseStudy = Pick<CaseStudy, "id" | "slug" | "title" | "services">;
+
+export function WorkGrid({ caseStudies }: { caseStudies: WorkGridCaseStudy[] }) {
   const [filter, setFilter] = useState<ServiceType | "ALL">("ALL");
 
   const filtered =

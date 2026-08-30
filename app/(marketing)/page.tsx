@@ -14,14 +14,26 @@ import { services } from "@/config/services";
 import { packagesByCategory } from "@/config/packages";
 import type { ServiceType } from "@prisma/client";
 
-// Reads case studies / testimonials from the DB — render per request so the
-// build never needs a database connection. See PLAN: CI build fix.
-export const dynamic = "force-dynamic";
+// Reads case studies / testimonials from the DB. Cached via ISR (revalidate)
+// rather than `force-dynamic` so most requests render without touching Neon —
+// published content changes rarely. The build still never needs a database
+// connection. See PLAN: CI build fix.
+export const revalidate = 300;
 
 export default async function HomePage() {
   const [featuredWork, testimonials] = await Promise.all([
-    db.caseStudy.findMany({ where: { publishedAt: { not: null } }, orderBy: { publishedAt: "desc" }, take: 3 }),
-    db.testimonial.findMany({ where: { approvedAt: { not: null } }, orderBy: { approvedAt: "desc" }, take: 2 }),
+    db.caseStudy.findMany({
+      where: { publishedAt: { not: null } },
+      orderBy: { publishedAt: "desc" },
+      take: 3,
+      select: { id: true, slug: true, title: true, services: true },
+    }),
+    db.testimonial.findMany({
+      where: { approvedAt: { not: null } },
+      orderBy: { approvedAt: "desc" },
+      take: 2,
+      select: { id: true, quote: true, authorName: true, authorRole: true },
+    }),
   ]);
 
   const pricingTeaser = packagesByCategory("Websites").filter((pkg) => pkg.tier !== "CUSTOM");

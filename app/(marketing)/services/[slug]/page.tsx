@@ -12,11 +12,11 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { getServiceBySlug } from "@/config/services";
 import { packages } from "@/config/packages";
 
-// Reads case studies from the DB — render per request so `next build` needs no
-// database connection. (No generateStaticParams: enumerated params would force
+// Reads case studies from the DB — cached via ISR (revalidate) so most requests
+// skip the database. (No generateStaticParams: enumerated params would force
 // build-time prerender of this route, which is exactly what we're avoiding.)
 // See PLAN: CI build fix.
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export default async function ServicePage({ params }: { params: { slug: string } }) {
   const service = getServiceBySlug(params.slug);

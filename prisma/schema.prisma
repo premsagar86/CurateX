@@ -408,6 +408,7 @@ model ContentPost {
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
+  @@index([publishedAt])
   @@map("content_post")
 }
 
@@ -427,6 +428,7 @@ model CaseStudy {
   publishedAt   DateTime?
   createdAt     DateTime     @default(now())
 
+  @@index([publishedAt])
   @@map("case_study")
 }
 
@@ -442,6 +444,7 @@ model Testimonial {
 
   caseStudies CaseStudy[]
 
+  @@index([approvedAt])
   @@map("testimonial")
 }
 

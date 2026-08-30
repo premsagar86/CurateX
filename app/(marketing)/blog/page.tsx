@@ -5,8 +5,9 @@ import { Section } from "@/components/ui/section";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 
-// DB-backed — render per request so `next build` needs no database. See PLAN: CI build fix.
-export const dynamic = "force-dynamic";
+// DB-backed — cached via ISR (revalidate) so most requests skip the database;
+// `next build` still needs no database. See PLAN: CI build fix.
+export const revalidate = 300;
 
 export default async function BlogIndexPage() {
   const posts = await db.contentPost.findMany({
