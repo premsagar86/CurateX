@@ -112,15 +112,11 @@ export function CtaFinale() {
         Get a quote
       </Link>
 
-      {/* Mobile: fragments move in-flow so they never sit under the copy. */}
+      {/* Mobile: fragments move in-flow as a calm 2×2 group so they never
+          sit under the copy. */}
       <div className="relative z-[var(--z-content)] mt-12 grid w-full max-w-sm grid-cols-2 gap-3 opacity-75 md:hidden">
-        {FRAGMENTS.map((fragment, i) => (
-          <div
-            key={fragment.label}
-            className={`decor-card motion-decor flex flex-col gap-1.5 p-4 ${
-              i % 2 ? "animate-drift" : "animate-float"
-            }`}
-          >
+        {FRAGMENTS.map((fragment) => (
+          <div key={fragment.label} className="decor-card flex flex-col gap-1.5 p-4">
             <p className="font-display text-xl leading-none text-home-text">{fragment.value}</p>
             <p className="text-[0.6rem] uppercase tracking-wide text-home-muted">{fragment.label}</p>
           </div>

@@ -338,14 +338,11 @@ export function HeroBento() {
               desktop-only decoration; small screens get a compact, floating
               version so the hero doesn't read as a bare headline on a big
               empty canvas. */}
-          <ul className="mt-12 grid grid-cols-2 gap-3 md:hidden" aria-hidden>
-            {HERO_TILES.slice(0, 4).map((tile, i) => (
+          <ul className="mt-10 grid grid-cols-2 gap-3 md:hidden" aria-hidden>
+            {HERO_TILES.slice(0, 4).map((tile) => (
               <li
                 key={tile.label}
-                className={`hero-mobile-tile decor-card motion-decor flex flex-col gap-1 p-4 ${
-                  i % 2 ? "animate-drift" : "animate-float"
-                }`}
-                style={{ animationDelay: `${i * -1.7}s`, animationDuration: `${9 + (i % 3)}s` }}
+                className="hero-mobile-tile decor-card flex flex-col gap-1 p-4"
               >
                 <span className="font-display text-2xl leading-none text-home-text">{tile.stat}</span>
                 <span className="text-[0.62rem] uppercase tracking-wide text-home-muted">{tile.label}</span>

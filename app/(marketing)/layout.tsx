@@ -21,8 +21,8 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
             forge
           </span>
 
-          <div className="relative mx-auto grid max-w-container gap-10 md:grid-cols-4">
-            <div>
+          <div className="relative mx-auto grid max-w-container grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-4 md:gap-10">
+            <div className="col-span-2 md:col-span-1">
               <span className="font-display text-2xl tracking-tight text-white">forge</span>
               <p className="mt-2">Built to last.</p>
             </div>

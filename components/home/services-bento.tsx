@@ -10,6 +10,19 @@ import { useTilt } from "./motion/use-tilt";
 // Steel — site.md §9.1). Softened so it reads as a highlight, not a flare.
 const GLOW_COLORS = ["rgba(217,98,43,0.16)", "rgba(242,169,59,0.16)", "rgba(120,138,150,0.22)"];
 
+// Short labels for the compact mobile grid (4 across, 2 rows). The full
+// names are kept for sm+ where each tile has room for the description too.
+const SHORT_NAMES: Record<string, string> = {
+  "website-design-development": "Web Design",
+  "ui-ux-design": "UI / UX",
+  "branding-visual-identity": "Branding",
+  "graphic-design-marketing-creatives": "Graphic",
+  "social-media-management": "Social",
+  "content-creation": "Content",
+  seo: "SEO",
+  "ecommerce-builds": "Ecommerce",
+};
+
 function ServiceTile({ service, index }: { service: Service; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   useTilt(ref as React.RefObject<HTMLElement>, 6);
@@ -27,7 +40,7 @@ function ServiceTile({ service, index }: { service: Service; index: number }) {
       <div
         ref={ref}
         data-reveal
-        className="group relative flex h-full min-h-[12rem] flex-col overflow-hidden rounded-lg border border-home-border bg-home-surface p-6 sm:min-h-[16rem]"
+        className="group relative flex h-full min-h-[4.75rem] flex-col overflow-hidden rounded-md border border-home-border bg-home-surface p-3 transition-colors duration-300 hover:border-primary/45 sm:min-h-[16rem] sm:rounded-lg sm:p-6 sm:hover:bg-home-surface-2"
       >
         {/* Cursor-follow highlight. */}
         <div
@@ -38,28 +51,51 @@ function ServiceTile({ service, index }: { service: Service; index: number }) {
           }}
         />
 
-        {/* Editorial index numeral — sits fully inside the card, behind the
-            content and printed into the surface. The copy reserves the right edge
-            (title pr-10, description pr-12) so it never overlaps. */}
+        {/* Subtle full-card warm wash on hover — reads as a colour shift, not
+            a flare. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-primary/[0.07] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        />
+
+        {/* Editorial index numeral — sm+ only; it would blow out a compact
+            mobile tile. */}
         <span
           aria-hidden
-          className="decor-numeral absolute bottom-3 right-4 z-0 text-[4.5rem] sm:text-[7rem]"
+          className="decor-numeral absolute bottom-3 right-4 z-0 hidden sm:block sm:text-[7rem]"
         >
           {number}
         </span>
 
-        {/* Content — fixed order: eyebrow → title → description → action. */}
+        {/* Content — fixed order: eyebrow → title → description. Recedes on
+            hover (sm+) so the centred prompt reads clearly. */}
         <Link
           href={`/services/${service.slug}`}
           className="relative z-[1] flex h-full flex-col focus-visible:outline-none"
         >
-          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">{number}</span>
-          <h3 className="mt-3 pr-10 font-display text-xl leading-tight text-home-text">{service.name}</h3>
-          <p className="mt-2 line-clamp-2 pr-12 text-sm leading-relaxed text-home-muted">{service.oneLiner}</p>
-          <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-medium text-home-text opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-            Explore <span aria-hidden>&rarr;</span>
-          </span>
+          <div className="transition-opacity duration-300 sm:group-hover:opacity-40">
+            <span className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-primary/80 sm:text-xs sm:tracking-[0.18em]">
+              {number}
+            </span>
+            <h3 className="mt-1 break-words font-display text-[0.82rem] leading-[1.15] text-home-text sm:mt-3 sm:pr-10 sm:text-xl sm:leading-tight">
+              <span className="sm:hidden">{SHORT_NAMES[service.slug] ?? service.name}</span>
+              <span className="hidden sm:inline">{service.name}</span>
+            </h3>
+            <p className="mt-2 hidden line-clamp-2 pr-12 text-sm leading-relaxed text-home-muted sm:block">
+              {service.oneLiner}
+            </p>
+          </div>
         </Link>
+
+        {/* Centred hover prompt — sm+ only (no hover state on touch). */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-[2] hidden items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:flex"
+        >
+          <span className="inline-flex items-center gap-2 font-display text-lg text-primary">
+            Explore more <span aria-hidden>&rarr;</span>
+          </span>
+        </div>
       </div>
     </div>
   );
@@ -88,7 +124,12 @@ export function ServicesBento({ services }: { services: Service[] }) {
         </p>
       </div>
 
-      <div ref={containerRef} className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Mobile: 4 across, 2 rows — grouped, not a tall stack. sm: roomy
+          2-up cards with copy; lg: the full 4-up bento. */}
+      <div
+        ref={containerRef}
+        className="grid grid-cols-4 gap-2.5 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4"
+      >
         {services.map((service, index) => (
           <ServiceTile key={service.slug} service={service} index={index} />
         ))}

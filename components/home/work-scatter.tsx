@@ -18,6 +18,9 @@ export interface WorkItem {
 
 const ROTATIONS = ["md:-rotate-1", "md:rotate-1", "md:-rotate-1"];
 const SPANS = ["md:col-span-3 md:row-span-2", "md:col-span-3 md:mt-12", "md:col-span-3 md:mt-4"];
+// Mobile: first project full-bleed, the rest paired two-up — grouped, not
+// a single stacked column.
+const MOBILE_SPANS = ["col-span-2", "col-span-1", "col-span-1"];
 
 function gradientFor(title: string) {
   const hash = [...title].reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
@@ -96,18 +99,18 @@ export function WorkScatter({ items }: { items: WorkItem[] }) {
           </p>
         </div>
       ) : (
-        <div ref={containerRef} className="grid grid-cols-1 gap-6 md:grid-cols-6">
+        <div ref={containerRef} className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-6 md:gap-6">
           {items.map((item, index) => (
             <Link
               key={item.id}
               href={`/work/${item.slug}`}
-              className={`work-card group relative flex aspect-video flex-col justify-end overflow-hidden rounded-lg border border-home-border p-6 ${SPANS[index % SPANS.length]} ${ROTATIONS[index % ROTATIONS.length]}`}
+              className={`work-card group relative flex aspect-video flex-col justify-end overflow-hidden rounded-lg border border-home-border p-4 sm:p-6 ${MOBILE_SPANS[index % MOBILE_SPANS.length]} ${SPANS[index % SPANS.length]} ${ROTATIONS[index % ROTATIONS.length]}`}
               style={{ backgroundImage: gradientFor(item.title) }}
             >
               <div className="absolute inset-0 bg-black/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-              <h3 className="relative font-display text-2xl text-white md:text-3xl">{item.title}</h3>
+              <h3 className="relative font-display text-lg text-white sm:text-2xl md:text-3xl">{item.title}</h3>
               {item.services.length > 0 && (
-                <div className="relative mt-2 flex flex-wrap gap-2">
+                <div className="relative mt-2 hidden flex-wrap gap-2 sm:flex">
                   {item.services.map((service) => (
                     <span key={service} className="rounded-full bg-white/15 px-2.5 py-0.5 text-xs font-medium text-white">
                       {service}
