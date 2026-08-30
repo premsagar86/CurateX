@@ -18,7 +18,7 @@ export function WorkGrid({ caseStudies }: { caseStudies: CaseStudy[] }) {
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap gap-2">
+      <div className="mb-4 flex flex-wrap gap-2">
         <button
           onClick={() => setFilter("ALL")}
           className={`rounded-full border px-3 py-1 text-sm ${filter === "ALL" ? "border-primary bg-primary text-white" : "border-border"}`}
@@ -37,7 +37,7 @@ export function WorkGrid({ caseStudies }: { caseStudies: CaseStudy[] }) {
       </div>
 
       {filtered.length > 0 ? (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((caseStudy) => (
             <ProjectCard key={caseStudy.id} caseStudy={caseStudy} />
           ))}

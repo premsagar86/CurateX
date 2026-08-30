@@ -66,12 +66,12 @@ export default async function ServicePage({ params }: { params: { slug: string }
 
       {servicePackages.length > 0 && (
         <Section heading="Pricing snapshot">
-          <div className="grid gap-6 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-3">
             {servicePackages.map((pkg) => (
               <PricingCard key={pkg.name} pkg={pkg} />
             ))}
           </div>
-          <p className="mt-6">
+          <p className="mt-4">
             <Link href="/pricing" className="text-sm font-medium underline">
               See combined package pricing →
             </Link>
@@ -81,7 +81,7 @@ export default async function ServicePage({ params }: { params: { slug: string }
 
       <Section heading="Related work">
         {filteredWork.length > 0 ? (
-          <div className="grid gap-6 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-3">
             {filteredWork.map((caseStudy) => (
               <ProjectCard key={caseStudy.id} caseStudy={caseStudy} />
             ))}

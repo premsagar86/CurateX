@@ -21,7 +21,7 @@ export default async function BlogIndexPage() {
       {posts.length === 0 ? (
         <EmptyState title="No posts published yet" description="Check back soon for insights on branding, web, and growth for Indian SMBs." />
       ) : (
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-6">
           {featured && (
             <Link href={`/blog/${featured.slug}`}>
               <Card interactive>
@@ -32,7 +32,7 @@ export default async function BlogIndexPage() {
             </Link>
           )}
           {rest.length > 0 && (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {rest.map((post) => (
                 <Link key={post.id} href={`/blog/${post.slug}`}>
                   <Card interactive className="h-full">

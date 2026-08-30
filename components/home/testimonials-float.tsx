@@ -32,12 +32,12 @@ export function TestimonialsFloat({ testimonials }: { testimonials: TestimonialI
       </span>
 
       <div className="relative mx-auto max-w-container">
-        <div className="mb-10 max-w-2xl md:mb-14">
+        <div className="mb-6 max-w-2xl md:mb-8">
           <p className="text-sm font-semibold uppercase tracking-[0.22em] text-primary">Clients</p>
-          <h2 className="mt-4 font-display text-display-2 text-home-text">What it&apos;s like to work with us</h2>
+          <h2 className="mt-3 font-display text-display-2 text-home-text">What it&apos;s like to work with us</h2>
         </div>
 
-        <div ref={containerRef} className="grid gap-5 md:grid-cols-2">
+        <div ref={containerRef} className="grid gap-4 md:grid-cols-2">
           {testimonials.map((testimonial, index) => (
             <figure
               key={testimonial.id}

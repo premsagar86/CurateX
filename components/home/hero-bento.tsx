@@ -263,7 +263,7 @@ export function HeroBento() {
   return (
     <section
       ref={sectionRef}
-      className="relative isolate flex min-h-[calc(100svh_-_var(--nav-h))] items-center overflow-clip px-6 py-14 sm:py-16 md:py-20"
+      className="relative isolate flex min-h-[calc(100svh_-_var(--nav-h))] items-center overflow-clip px-6 py-10 sm:py-12 md:py-16"
     >
       {/* ---- Atmospheric background layer (z-decor) ---------------------- */}
       <div className="pointer-events-none absolute inset-0 z-[var(--z-decor)]" aria-hidden>
@@ -383,15 +383,15 @@ export function HeroBento() {
           </p>
           <h1
             ref={headlineRef}
-            className="mt-5 max-w-[12ch] text-balance font-display text-display-1 text-home-text"
+            className="mt-4 max-w-[12ch] text-balance font-display text-display-1 text-home-text"
           >
             Built to last.
           </h1>
-          <p className="hero-sub mt-6 max-w-md text-lg leading-relaxed text-home-muted">
+          <p className="hero-sub mt-4 max-w-md text-lg leading-relaxed text-home-muted">
             We build the digital presence your business has earned — designed with craft, delivered with
             process, maintained as a partner, not a vendor.
           </p>
-          <div className="hero-cta mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
+          <div className="hero-cta mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
             <Link
               ref={ctaRef}
               href="/contact"
@@ -408,7 +408,7 @@ export function HeroBento() {
               desktop-only decoration; small screens get a compact, floating
               version so the hero doesn't read as a bare headline on a big
               empty canvas. */}
-          <ul className="mt-10 grid grid-cols-2 gap-3 md:hidden" aria-hidden>
+          <ul className="mt-8 grid grid-cols-2 gap-3 md:hidden" aria-hidden>
             {HERO_TILES.slice(0, 4).map((tile) => (
               <li
                 key={tile.label}

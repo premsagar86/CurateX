@@ -101,20 +101,20 @@ export function CtaFinale() {
       >
         Ready to talk about your project?
       </h2>
-      <p className="relative z-[var(--z-content)] mx-auto mt-6 max-w-md text-lg leading-relaxed text-home-muted">
+      <p className="relative z-[var(--z-content)] mx-auto mt-4 max-w-md text-lg leading-relaxed text-home-muted">
         Tell us what you&apos;re building — we&apos;ll respond within one business day.
       </p>
       <Link
         ref={ctaRef}
         href="/contact"
-        className="btn-pill btn-pill-lg btn-pill-primary is-magnetic relative z-[var(--z-content)] mt-10"
+        className="btn-pill btn-pill-lg btn-pill-primary is-magnetic relative z-[var(--z-content)] mt-8"
       >
         Get a quote
       </Link>
 
       {/* Mobile: fragments move in-flow as a calm 2×2 group so they never
           sit under the copy. */}
-      <div className="relative z-[var(--z-content)] mt-12 grid w-full max-w-sm grid-cols-2 gap-3 opacity-90 md:hidden">
+      <div className="relative z-[var(--z-content)] mt-8 grid w-full max-w-sm grid-cols-2 gap-3 opacity-90 md:hidden">
         {FRAGMENTS.map((fragment) => (
           <div key={fragment.label} className="decor-card flex flex-col gap-1.5 p-4">
             <p className="font-display text-xl leading-none text-home-text">{fragment.value}</p>

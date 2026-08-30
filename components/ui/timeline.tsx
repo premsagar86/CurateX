@@ -20,7 +20,7 @@ export function Timeline({ steps, orientation = "vertical" }: { steps: TimelineS
   return (
     <ol
       className={cn(
-        orientation === "vertical" ? "flex flex-col gap-6" : "flex flex-wrap gap-6"
+        orientation === "vertical" ? "flex flex-col gap-4" : "flex flex-wrap gap-4"
       )}
     >
       {steps.map((step, index) => (

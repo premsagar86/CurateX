@@ -17,7 +17,7 @@ export default async function AdminProjectDetailPage({ params }: { params: { id:
   const nextOrder = project.milestones.length > 0 ? Math.max(...project.milestones.map((m) => m.order)) + 1 : 0;
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h1 className="font-display text-2xl">{project.name}</h1>

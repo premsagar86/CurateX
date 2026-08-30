@@ -33,7 +33,7 @@ export default async function AdminDashboardPage() {
   const needsAttention = staleLeads.length + overdueInvoices.length + stuckMilestones.length;
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
       <h1 className="font-display text-2xl">Admin Dashboard</h1>
 
       <div>

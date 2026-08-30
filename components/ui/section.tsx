@@ -13,12 +13,12 @@ export function Section({ eyebrow, heading, body, className, children, ...props 
   return (
     <section className={cn("section-y mx-auto max-w-container px-6", className)} {...props}>
       {(eyebrow || heading || body) && (
-        <div className="mb-10 max-w-2xl">
+        <div className="mb-6 max-w-2xl">
           {eyebrow && (
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.22em] text-primary">{eyebrow}</p>
+            <p className="mb-2 text-sm font-semibold uppercase tracking-[0.22em] text-primary">{eyebrow}</p>
           )}
           {heading && <h2 className="text-balance font-display text-2xl md:text-3xl">{heading}</h2>}
-          {body && <p className="mt-3 max-w-prose leading-relaxed text-text-muted">{body}</p>}
+          {body && <p className="mt-2 max-w-prose leading-relaxed text-text-muted">{body}</p>}
         </div>
       )}
       {children}

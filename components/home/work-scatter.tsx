@@ -86,9 +86,9 @@ export function WorkScatter({ items }: { items: WorkItem[] }) {
 
   return (
     <section className="section-y relative mx-auto max-w-container px-6 [perspective:1400px]">
-      <div className="mb-10 max-w-2xl md:mb-14">
+      <div className="mb-6 max-w-2xl md:mb-8">
         <p className="text-sm font-semibold uppercase tracking-[0.22em] text-primary">Work</p>
-        <h2 className="mt-4 font-display text-display-2 text-home-text">Recent projects</h2>
+        <h2 className="mt-3 font-display text-display-2 text-home-text">Recent projects</h2>
       </div>
 
       {items.length === 0 ? (

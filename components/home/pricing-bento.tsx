@@ -46,7 +46,7 @@ function PricingCard({ pkg }: { pkg: Package }) {
         <PlanName name={pkg.name} />
       </h3>
 
-      <p className="mt-5 font-display text-4xl text-home-text">
+      <p className="mt-4 font-display text-4xl text-home-text">
         {pkg.priceInRupees !== null ? `₹${pkg.priceInRupees.toLocaleString("en-IN")}` : "Custom quote"}
         {pkg.cadence === "monthly" && pkg.priceInRupees !== null && (
           <span className="text-base font-normal text-home-muted">/month</span>
@@ -55,7 +55,7 @@ function PricingCard({ pkg }: { pkg: Package }) {
       <p className="mt-1 min-h-[1.25rem] text-xs text-home-muted">{pkg.note ?? " "}</p>
 
       {/* Features grow to fill, so every CTA lands on the same baseline. */}
-      <ul className="mt-6 flex flex-1 flex-col gap-2.5 text-sm text-home-text">
+      <ul className="mt-5 flex flex-1 flex-col gap-2.5 text-sm text-home-text">
         {pkg.includes.map((item) => (
           <li key={item} className="flex gap-2.5">
             <span aria-hidden className="mt-0.5 text-success">✓</span>
@@ -66,7 +66,7 @@ function PricingCard({ pkg }: { pkg: Package }) {
 
       <Link
         href="/contact"
-        className={`btn-pill mt-8 w-full ${featured ? "btn-pill-primary" : "btn-pill-secondary"}`}
+        className={`btn-pill mt-6 w-full ${featured ? "btn-pill-primary" : "btn-pill-secondary"}`}
       >
         Get a quote
       </Link>
@@ -85,21 +85,21 @@ export function PricingBento({ packages }: { packages: Package[] }) {
 
   return (
     <section className="section-y relative mx-auto max-w-container px-6">
-      <div className="mb-10 max-w-2xl md:mb-14">
+      <div className="mb-6 max-w-2xl md:mb-8">
         <p className="text-sm font-semibold uppercase tracking-[0.22em] text-primary">Pricing</p>
-        <h2 className="mt-4 font-display text-display-2 text-home-text">Transparent, productized pricing</h2>
-        <p className="mt-4 max-w-prose text-home-muted">
+        <h2 className="mt-3 font-display text-display-2 text-home-text">Transparent, productized pricing</h2>
+        <p className="mt-3 max-w-prose text-home-muted">
           Every price, scope, and timeline is written down — no surprise invoices.
         </p>
       </div>
 
-      <div ref={containerRef} className="grid items-stretch gap-5 md:grid-cols-3">
+      <div ref={containerRef} className="grid items-stretch gap-4 md:grid-cols-3">
         {packages.map((pkg) => (
           <PricingCard key={pkg.name} pkg={pkg} />
         ))}
       </div>
 
-      <p className="mt-10">
+      <p className="mt-6">
         <Link
           href="/pricing"
           className="text-sm font-medium text-home-text underline underline-offset-4 hover:text-primary"

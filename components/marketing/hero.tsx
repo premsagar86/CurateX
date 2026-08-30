@@ -15,7 +15,7 @@ export interface HeroProps {
 
 export function Hero({ eyebrow, headline, subhead, primaryCta, secondaryCta, visual }: HeroProps) {
   return (
-    <div className="mx-auto flex max-w-container flex-col items-center gap-6 px-6 py-16 text-center md:py-24">
+    <div className="mx-auto flex max-w-container flex-col items-center gap-5 px-6 py-12 text-center md:py-16">
       {eyebrow && <p className="text-sm font-semibold uppercase tracking-wide text-primary">{eyebrow}</p>}
       <h1 className="max-w-3xl font-display text-4xl leading-tight md:text-5xl">{headline}</h1>
       {subhead && <p className="mx-auto max-w-2xl text-lg text-text-muted">{subhead}</p>}
@@ -29,7 +29,7 @@ export function Hero({ eyebrow, headline, subhead, primaryCta, secondaryCta, vis
           </Link>
         )}
       </div>
-      {visual && <div className="mt-4 w-full max-w-3xl">{visual}</div>}
+      {visual && <div className="mt-3 w-full max-w-3xl">{visual}</div>}
     </div>
   );
 }

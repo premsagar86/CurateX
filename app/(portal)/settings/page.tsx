@@ -12,7 +12,7 @@ export default async function SettingsPage() {
   const prefs = { ...DEFAULT_PREFS, ...(user.notificationPrefs as Partial<NotificationPrefs> | null) };
 
   return (
-    <div className="flex max-w-lg flex-col gap-10">
+    <div className="flex max-w-lg flex-col gap-6">
       <h1 className="font-display text-2xl">Settings</h1>
 
       <section>

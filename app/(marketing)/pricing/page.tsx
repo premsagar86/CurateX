@@ -22,9 +22,9 @@ export default function PricingPage() {
           const pkgs = packagesByCategory(category);
           if (pkgs.length === 0) return null;
           return (
-            <div key={category} className="mb-12">
-              <h3 className="mb-4 font-display text-xl">{category}</h3>
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div key={category} className="mb-8">
+              <h3 className="mb-3 font-display text-xl">{category}</h3>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {pkgs.map((pkg) => (
                   <PricingCard key={pkg.name} pkg={pkg} />
                 ))}
@@ -33,7 +33,7 @@ export default function PricingPage() {
           );
         })}
 
-        <div className="mt-8 rounded-lg border border-primary/30 bg-primary/5 p-6 text-center">
+        <div className="mt-6 rounded-lg border border-primary/30 bg-primary/5 p-6 text-center">
           <p className="font-medium">Need something outside these tiers?</p>
           <p className="mt-1 text-sm text-text-muted">Enterprise/Custom work is scoped per discovery call, with a stated floor of ₹2,50,000.</p>
         </div>

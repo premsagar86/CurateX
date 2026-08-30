@@ -6,7 +6,7 @@ import { ContactForm } from "@/components/marketing/contact-form";
 export default function ContactPage() {
   return (
     <Section heading="Tell us about your project" body="We'll respond within one business day.">
-      <div className="grid gap-12 md:grid-cols-2">
+      <div className="grid gap-8 md:grid-cols-2">
         <ContactForm />
         <div className="rounded-lg border border-border p-6">
           <p className="font-medium">Prefer not to use a form?</p>

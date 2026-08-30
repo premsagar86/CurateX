@@ -13,16 +13,16 @@ const SECTIONS = [
 
 export default function PrivacyPage() {
   return (
-    <div className="mx-auto max-w-2xl px-6 py-16">
+    <div className="mx-auto max-w-2xl px-6 py-12">
       <h1 className="font-display text-3xl">Privacy Policy</h1>
 
-      <div className="mt-4 rounded-md border border-warning/40 bg-warning/10 p-4 text-sm">
+      <div className="mt-3 rounded-md border border-warning/40 bg-warning/10 p-4 text-sm">
         <strong>Placeholder — requires professional legal review before publishing.</strong> The
         sections below establish the page&apos;s structure and placement in the sitemap only; the
         actual legal text must be drafted or reviewed by a qualified professional.
       </div>
 
-      <nav className="mt-8 rounded-md border border-border p-4 text-sm">
+      <nav className="mt-6 rounded-md border border-border p-4 text-sm">
         <p className="mb-2 font-medium">Contents</p>
         <ol className="list-inside list-decimal">
           {SECTIONS.map((section) => (
@@ -31,7 +31,7 @@ export default function PrivacyPage() {
         </ol>
       </nav>
 
-      <div className="mt-8 flex flex-col gap-6">
+      <div className="mt-6 flex flex-col gap-5">
         {SECTIONS.map((section) => (
           <section key={section}>
             <h2 className="font-display text-lg">{section}</h2>

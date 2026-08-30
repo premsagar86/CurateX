@@ -38,11 +38,11 @@ export default function AboutPage() {
       />
 
       <Section heading="Founders">
-        <div className="grid gap-6 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-3">
           {FOUNDERS.map((founder) => (
-            <div key={founder.name} className="rounded-lg border border-border p-20 text-center transition hover:scale-105 duration-1000 hover:border-zinc-700">
+            <div key={founder.name} className="rounded-lg border border-border p-8 text-center transition hover:scale-105 duration-1000 hover:border-zinc-700">
               <Avatar name={founder.name} size="lg" className="mx-auto" />
-              <p className="mt-4 font-medium">{founder.name}</p>
+              <p className="mt-3 font-medium">{founder.name}</p>
               <p className="text-sm text-primary">{founder.role}</p>
               <p className="mt-2 text-sm text-text-muted">{founder.blurb}</p>
             </div>
@@ -51,7 +51,7 @@ export default function AboutPage() {
       </Section>
 
       <Section heading="Values">
-        <div className="grid gap-6 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2">
           {VALUES.map((value) => (
             <div key={value.title} className="rounded-lg border border-border p-4">
               <p className="font-medium">{value.title}</p>
@@ -59,7 +59,7 @@ export default function AboutPage() {
             </div>
           ))}
         </div>
-        <p className="mt-6">
+        <p className="mt-4">
           <Link href="/process" className="text-sm font-medium underline">
             See how we actually work →
           </Link>

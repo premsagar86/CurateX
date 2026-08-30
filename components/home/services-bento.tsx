@@ -107,10 +107,10 @@ export function ServicesBento({ services }: { services: Service[] }) {
 
   return (
     <section className="section-y relative mx-auto max-w-container px-6">
-      <div className="mb-10 max-w-2xl md:mb-14">
+      <div className="mb-6 max-w-2xl md:mb-8">
         <p className="text-sm font-semibold uppercase tracking-[0.22em] text-primary">What we do</p>
-        <h2 className="mt-4 font-display text-display-2 text-home-text">Eight services, one accountable team</h2>
-        <p className="mt-4 max-w-prose text-home-muted">
+        <h2 className="mt-3 font-display text-display-2 text-home-text">Eight services, one accountable team</h2>
+        <p className="mt-3 max-w-prose text-home-muted">
           No finger-pointing between &ldquo;the designer&rdquo; and &ldquo;the developer&rdquo; — one team owns
           your project end to end.
         </p>

@@ -25,7 +25,7 @@ export default async function ProjectDetailPage({ params }: { params: { id: stri
   const completed = project.milestones.filter((m) => m.status === "APPROVED" || m.status === "DELIVERED").length;
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
       <div>
         <div className="flex items-center gap-3">
           <h1 className="font-display text-2xl">{project.name}</h1>

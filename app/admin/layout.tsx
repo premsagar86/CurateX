@@ -29,7 +29,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <aside className="hidden w-56 shrink-0 flex-col justify-between border-r border-border p-4 md:flex">
         <div>
           <span className="font-display text-lg tracking-tight">forge admin</span>
-          <nav className="mt-8 flex flex-col gap-1">
+          <nav className="mt-6 flex flex-col gap-1">
             {NAV_LINKS.map((link) => (
               <Link key={link.href} href={link.href} className="rounded-md px-3 py-2 text-sm hover:bg-surface-elevated">
                 {link.label}

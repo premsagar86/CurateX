@@ -17,7 +17,7 @@ export default async function AdminClientDetailPage({ params }: { params: { id: 
   if (!client) notFound();
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
       <h1 className="font-display text-2xl">{client.companyName}</h1>
 
       <div>

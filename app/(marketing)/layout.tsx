@@ -13,7 +13,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
 
         <main className="flex-1 bg-background">{children}</main>
 
-        <footer className="relative overflow-hidden border-t border-home-border bg-[#0d0b09] px-6 py-16 text-sm text-home-muted">
+        <footer className="relative overflow-hidden border-t border-home-border bg-[#0d0b09] px-6 py-12 text-sm text-home-muted">
           <span
             aria-hidden
             className="decor-numeral pointer-events-none absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap text-ghost text-white/[0.03]"
@@ -21,7 +21,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
             forge
           </span>
 
-          <div className="relative mx-auto grid max-w-container grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-4 md:gap-10">
+          <div className="relative mx-auto grid max-w-container grid-cols-2 gap-x-6 gap-y-6 md:grid-cols-4 md:gap-8">
             <div className="col-span-2 md:col-span-1">
               <span className="font-display text-2xl tracking-tight text-white">forge</span>
               <p className="mt-2">Built to last.</p>
@@ -50,7 +50,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
               </ul>
             </div>
           </div>
-          <p className="relative mx-auto mt-10 max-w-container opacity-20">© {new Date().getFullYear()} Forge Digital</p>
+          <p className="relative mx-auto mt-8 max-w-container opacity-20">© {new Date().getFullYear()} Forge Digital</p>
         </footer>
       </div>
     </SmoothScrollProvider>

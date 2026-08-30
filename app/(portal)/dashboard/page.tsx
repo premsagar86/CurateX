@@ -35,7 +35,7 @@ export default async function DashboardPage() {
   ]);
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
       <div>
         <h1 className="font-display text-2xl">Welcome back{session!.user.name ? `, ${session!.user.name}` : ""}</h1>
         <p className="mt-1 text-text-muted">

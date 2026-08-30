@@ -13,7 +13,7 @@ export default async function AdminSettingsPage() {
   const teamUsers = await db.user.findMany({ where: { role: "TEAM" }, orderBy: { name: "asc" } });
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
       <h1 className="font-display text-2xl">Settings</h1>
 
       <div>

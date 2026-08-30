@@ -46,7 +46,7 @@ export default async function CaseStudyPage({ params }: { params: { slug: string
             return service ? <Badge key={t}>{service.name}</Badge> : null;
           })}
         </div>
-        <div className="mt-6 flex aspect-video items-center justify-center rounded-lg border border-dashed border-border bg-surface-elevated text-sm text-text-muted">
+        <div className="mt-4 flex aspect-video items-center justify-center rounded-lg border border-dashed border-border bg-surface-elevated text-sm text-text-muted">
           Project visual
         </div>
       </Section>
@@ -63,7 +63,7 @@ export default async function CaseStudyPage({ params }: { params: { slug: string
 
       {related.length > 0 && (
         <Section heading="Related work">
-          <div className="grid gap-6 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-3">
             {related.map((cs) => (
               <ProjectCard key={cs.id} caseStudy={cs} />
             ))}
