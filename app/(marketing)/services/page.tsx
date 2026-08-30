@@ -11,9 +11,9 @@ export default function ServicesPage() {
         heading="Services"
         body="We keep a narrow menu on purpose — eight services we're genuinely good at, delivered by one accountable team, instead of a long list stretched thin across freelancers who've never worked together."
       >
-        {/* Mobile: 4 across, 2 rows — grouped, not a tall stack. sm+: roomy
-            cards with the one-liner and price. */}
-        <div className="grid grid-cols-4 gap-2.5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+        {/* Mobile: 2-up grouped cards (title on one line + a short teaser);
+            sm+: roomy cards with the full one-liner and price. */}
+        <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
           {services.map((service) => (
             <ServiceCard key={service.slug} service={service} />
           ))}

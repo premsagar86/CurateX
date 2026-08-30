@@ -10,17 +10,17 @@ import { useTilt } from "./motion/use-tilt";
 // Steel — site.md §9.1). Softened so it reads as a highlight, not a flare.
 const GLOW_COLORS = ["rgba(217,98,43,0.16)", "rgba(242,169,59,0.16)", "rgba(120,138,150,0.22)"];
 
-// Short labels for the compact mobile grid (4 across, 2 rows). The full
-// names are kept for sm+ where each tile has room for the description too.
+// Tight labels for the 2-up mobile grid so the title always sits on one line
+// inside the box. Full names return at sm+ where the tile is far wider.
 const SHORT_NAMES: Record<string, string> = {
   "website-design-development": "Web Design",
   "ui-ux-design": "UI / UX",
   "branding-visual-identity": "Branding",
-  "graphic-design-marketing-creatives": "Graphic",
-  "social-media-management": "Social",
+  "graphic-design-marketing-creatives": "Graphic Design",
+  "social-media-management": "Social Media",
   "content-creation": "Content",
   seo: "SEO",
-  "ecommerce-builds": "Ecommerce",
+  "ecommerce-builds": "E-commerce",
 };
 
 function ServiceTile({ service, index }: { service: Service; index: number }) {
@@ -40,7 +40,7 @@ function ServiceTile({ service, index }: { service: Service; index: number }) {
       <div
         ref={ref}
         data-reveal
-        className="group relative flex h-full min-h-[4.75rem] flex-col overflow-hidden rounded-md border border-home-border bg-home-surface p-3 transition-colors duration-300 hover:border-primary/45 sm:min-h-[16rem] sm:rounded-lg sm:p-6 sm:hover:bg-home-surface-2"
+        className="group relative flex h-full min-h-[7.5rem] flex-col overflow-hidden rounded-lg border border-home-border bg-home-surface p-4 transition-colors duration-300 hover:border-primary/45 sm:min-h-[16rem] sm:p-6 sm:hover:bg-home-surface-2"
       >
         {/* Cursor-follow highlight. */}
         <div
@@ -58,7 +58,7 @@ function ServiceTile({ service, index }: { service: Service; index: number }) {
           className="pointer-events-none absolute inset-0 bg-primary/[0.07] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
         />
 
-        {/* Editorial index numeral — sm+ only; it would blow out a compact
+        {/* Editorial index numeral — sm+ only; it would blow out the smaller
             mobile tile. */}
         <span
           aria-hidden
@@ -72,16 +72,16 @@ function ServiceTile({ service, index }: { service: Service; index: number }) {
             the bottom-left corner) fades in. */}
         <Link
           href={`/services/${service.slug}`}
-          className="relative z-[1] flex h-full flex-col focus-visible:outline-none"
+          className="relative z-[1] flex h-full min-w-0 flex-col focus-visible:outline-none"
         >
-          <span className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-primary/80 sm:text-xs sm:tracking-[0.18em]">
+          <span className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-primary/80 sm:text-xs sm:tracking-[0.18em]">
             {number}
           </span>
-          <h3 className="mt-1 break-words font-display text-[0.82rem] leading-[1.15] text-home-text sm:mt-3 sm:pr-10 sm:text-xl sm:leading-tight">
+          <h3 className="mt-1.5 truncate font-display text-sm leading-tight text-home-text sm:mt-3 sm:overflow-visible sm:whitespace-normal sm:pr-10 sm:text-xl">
             <span className="sm:hidden">{SHORT_NAMES[service.slug] ?? service.name}</span>
             <span className="hidden sm:inline">{service.name}</span>
           </h3>
-          <p className="mt-2 hidden line-clamp-2 pr-12 text-sm leading-relaxed text-home-muted sm:block">
+          <p className="mt-1.5 line-clamp-2 text-[0.72rem] leading-snug text-home-muted sm:mt-2 sm:line-clamp-2 sm:pr-12 sm:text-sm sm:leading-relaxed">
             {service.oneLiner}
           </p>
           <span className="mt-auto hidden items-center gap-1.5 pt-5 text-sm font-medium text-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:inline-flex">
@@ -116,11 +116,11 @@ export function ServicesBento({ services }: { services: Service[] }) {
         </p>
       </div>
 
-      {/* Mobile: 4 across, 2 rows — grouped, not a tall stack. sm: roomy
-          2-up cards with copy; lg: the full 4-up bento. */}
+      {/* Mobile: 2-up grouped cards (title on one line + a short teaser);
+          lg: the full 4-up bento. */}
       <div
         ref={containerRef}
-        className="grid grid-cols-4 gap-2.5 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4"
+        className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4"
       >
         {services.map((service, index) => (
           <ServiceTile key={service.slug} service={service} index={index} />
