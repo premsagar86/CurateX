@@ -19,7 +19,6 @@ const HERO_TILES = [
   { stat: "4.9", label: "average rating" },
   { stat: "100%", label: "in-house team" },
   { stat: "30d", label: "typical launch" },
-  { stat: "8", label: "services, one team" },
   { stat: "12yr", label: "of craft" },
   { stat: "40+", label: "active clients" },
   { stat: "24h", label: "reply time" },
@@ -27,10 +26,34 @@ const HERO_TILES = [
   { stat: "0", label: "outsourced work" },
   { stat: "200+", label: "launches shipped" },
   { stat: "1", label: "point of contact" },
+  { stat: "3wk", label: "avg build" },
+  { stat: "2", label: "revision rounds" },
+  { stat: "60+", label: "brands helped" },
+  { stat: "10k", label: "hours shipped" },
+  { stat: "48h", label: "first draft" },
+  { stat: "90d", label: "support window" },
+  { stat: "1:1", label: "client comms" },
+  // ZOOM_INDEX — the glowing card. Kept near the middle of the field so the
+  // scroll zoom pushes straight into it rather than off toward a corner.
+  { stat: "8", label: "services, one team" },
+  { stat: "0", label: "surprise invoices" },
+  { stat: "5★", label: "review average" },
+  { stat: "100%", label: "own your code" },
+  { stat: "6", label: "week max scope" },
+  { stat: "24/7", label: "uptime watch" },
+  { stat: "3", label: "concept routes" },
+  { stat: "0", label: "hidden fees" },
+  { stat: "100%", label: "responsive" },
+  { stat: "15+", label: "industries" },
+  { stat: "99.9%", label: "uptime" },
+  { stat: "1wk", label: "design sprint" },
+  { stat: "2x", label: "faster launch" },
+  { stat: "7", label: "day check-ins" },
+  { stat: "∞", label: "care after launch" },
+  { stat: "1", label: "project lead" },
+  { stat: "A+", label: "perf budget" },
 ];
-// Top row, toward the right at every breakpoint — clear of the left-aligned
-// headline while still part of the field.
-const ZOOM_INDEX = 4;
+const ZOOM_INDEX = 18;
 
 // The scattered field + the pinned "becoming" moment are desktop-only. On
 // phones the field is display:none, and pinning the section for ~2 extra
@@ -41,12 +64,12 @@ const DESKTOP_MOTION_QUERY = "(prefers-reduced-motion: no-preference) and (min-w
 // `.hero-tile`) so the loose layout and the scroll animation don't fight
 // over `transform`.
 const TILE_SCATTER = [
-  "rotate-[-4deg] translate-y-2",
-  "rotate-[3deg] -translate-y-2",
-  "rotate-[-2deg] translate-y-3",
-  "rotate-[4deg] translate-y-1",
+  "rotate-[-3deg] translate-y-1",
+  "rotate-[3deg] -translate-y-1",
+  "rotate-[-2deg] translate-y-1.5",
+  "rotate-[3deg] translate-y-0.5",
   "rotate-[-3deg] -translate-y-1",
-  "rotate-[2deg] translate-y-2",
+  "rotate-[2deg] translate-y-1",
 ];
 
 export function HeroBento() {
@@ -150,6 +173,7 @@ export function HeroBento() {
           const originY = (((cellRect.top + cellRect.height / 2) - gridRect.top) / gridRect.height) * 100;
           gsap.set(tileGridRef.current, { rotate: 5, transformOrigin: `${originX}% ${originY}%` });
           gsap.set(contentRef.current, { transformOrigin: "50% 50%" });
+          gsap.set(focalCellRef.current, { transformOrigin: "50% 50%" });
 
           const tl = gsap.timeline({
             scrollTrigger: {
@@ -165,8 +189,12 @@ export function HeroBento() {
           });
 
           // Continuous zoom: linear scale across the whole pin so it tracks
-          // the scrollbar 1:1 and never eases to a halt mid-move.
+          // the scrollbar 1:1 and never eases to a halt mid-move. The field
+          // scale flings the (now tiny, denser) tiles off-screen; the focal
+          // cell takes an extra scale of its own so it still fills the frame
+          // exactly as before despite being a quarter the size.
           tl.to(tileGridRef.current, { scale: 11, rotate: 0, ease: "none", duration: 1 }, 0)
+            .to(focalCellRef.current, { scale: 2.4, ease: "none", duration: 1 }, 0)
             .to(contentRef.current, { scale: 1.5, autoAlpha: 0, ease: "power1.in", duration: 0.4 }, 0)
             .to([washRef.current, glowRef.current, ghostRef.current], { autoAlpha: 0, duration: 0.35 }, 0)
             .to(".hero-tile, .hero-ghost", { autoAlpha: 0, duration: 0.3, stagger: 0.02 }, 0.04)
@@ -250,22 +278,22 @@ export function HeroBento() {
         <div className="absolute inset-0 hidden items-center justify-center md:flex">
           <div
             ref={tileGridRef}
-            className="grid w-full max-w-[120rem] grid-cols-4 gap-4 rotate-[5deg] px-4 lg:grid-cols-6 lg:gap-5"
+            className="grid w-full max-w-[120rem] grid-cols-8 gap-2 rotate-[5deg] px-2 lg:grid-cols-12 lg:gap-2.5"
           >
             {HERO_TILES.map((tile, i) =>
               i === ZOOM_INDEX ? (
                 <div key={`${tile.label}-${i}`} ref={focalCellRef} className="relative z-[1] aspect-square">
                   <div
                     aria-hidden
-                    className="hero-ghost absolute inset-0 translate-x-2 translate-y-2 rotate-2 rounded-2xl border border-home-border bg-home-surface/30"
+                    className="hero-ghost absolute inset-0 translate-x-1 translate-y-1 rotate-1 rounded-md border border-home-border bg-home-surface/30"
                   />
                   <div
                     ref={tileRef}
-                    className="hero-tile-zoom glass absolute inset-0 flex flex-col items-center justify-center rounded-2xl text-center shadow-glow-accent ring-1 ring-accent/25"
+                    className="hero-tile-zoom glass absolute inset-0 flex flex-col items-center justify-center rounded-md text-center shadow-glow-accent ring-1 ring-accent/25"
                   >
-                    <div className="tile-label px-2">
-                      <p className="font-display text-2xl text-home-text">{tile.stat}</p>
-                      <p className="mt-1 text-[0.65rem] uppercase tracking-wide text-home-muted">{tile.label}</p>
+                    <div className="tile-label px-1">
+                      <p className="font-display text-sm leading-none text-home-text">{tile.stat}</p>
+                      <p className="mt-0.5 text-[0.5rem] uppercase tracking-wide text-home-muted">{tile.label}</p>
                     </div>
                   </div>
                 </div>
@@ -281,9 +309,9 @@ export function HeroBento() {
                       animationDuration: `${11 + (i % 4)}s`,
                     }}
                   >
-                    <div className="hero-tile decor-panel flex h-full w-full flex-col justify-between rounded-2xl p-3 opacity-[0.32] blur-[0.6px]">
-                      <p className="font-display text-lg leading-none text-home-text">{tile.stat}</p>
-                      <p className="text-[0.6rem] uppercase tracking-wide text-home-muted">{tile.label}</p>
+                    <div className="hero-tile decor-panel flex h-full w-full flex-col justify-between rounded-md p-1.5 opacity-[0.32] blur-[0.6px]">
+                      <p className="font-display text-[0.72rem] leading-none text-home-text">{tile.stat}</p>
+                      <p className="text-[0.46rem] uppercase leading-none tracking-wide text-home-muted">{tile.label}</p>
                     </div>
                   </div>
                 </div>
