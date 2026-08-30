@@ -94,32 +94,37 @@ export function ProcessRoadmap({ steps }: { steps: RoadmapStep[] }) {
   const currentIndex = steps.findIndex((s) => s.status === "current");
   const travelled = currentIndex >= 0 ? (currentIndex + 0.5) / n : 1;
 
-  // Road geometry — stretch-to-fit viewBox, 100 units of height per step.
+  // Road geometry — stretch-to-fit viewBox, 100 units per step, plus a short
+  // lead-in at the top so the first milestone isn't jammed against the edge.
   const RIGHT_X = 72;
   const LEFT_X = 28;
+  const LEAD = 60;
+  const H = LEAD + n * 100;
   const nodes = steps.map((_, i) => ({
     x: i % 2 === 0 ? RIGHT_X : LEFT_X,
-    y: 50 + i * 100,
+    y: LEAD + 50 + i * 100,
     right: i % 2 === 0,
   }));
+  const pct = (y: number) => `${(y / H) * 100}%`;
+
   // Enters top-left, curves across to the first milestone, then alternates.
-  let d = `M ${LEFT_X} 0 C ${LEFT_X} ${nodes[0].y * 0.55} ${nodes[0].x} ${nodes[0].y * 0.4} ${nodes[0].x} ${nodes[0].y}`;
+  let d = `M ${LEFT_X} 0 C ${LEFT_X} ${nodes[0].y * 0.6} ${nodes[0].x} ${nodes[0].y * 0.4} ${nodes[0].x} ${nodes[0].y}`;
   for (let i = 1; i < n; i++) {
     const a = nodes[i - 1];
     const b = nodes[i];
     const my = (a.y + b.y) / 2;
     d += ` C ${a.x} ${my} ${b.x} ${my} ${b.x} ${b.y}`;
   }
-  d += ` L ${nodes[n - 1].x} ${n * 100}`;
+  d += ` L ${nodes[n - 1].x} ${H}`;
 
   return (
     <div className="overflow-hidden rounded-2xl border border-border" style={{ background: BG }}>
       <div className="px-4 py-8 sm:px-8 sm:py-12">
         {/* Taller (relative to width) as the screen narrows, so each step keeps
             room even when the copy wraps. Tuned for ~8 steps. */}
-        <div className="relative mx-auto w-full [--road-w:22px] aspect-[10/52] sm:[--road-w:28px] sm:aspect-[10/36] md:[--road-w:34px] md:aspect-[10/26] lg:[--road-w:40px] lg:aspect-[10/20] xl:aspect-[10/17]">
+        <div className="relative mx-auto w-full [--road-w:22px] aspect-[10/56] sm:[--road-w:28px] sm:aspect-[10/38] md:[--road-w:34px] md:aspect-[10/28] lg:[--road-w:40px] lg:aspect-[10/22] xl:aspect-[10/18]">
           <svg
-            viewBox={`0 0 100 ${n * 100}`}
+            viewBox={`0 0 100 ${H}`}
             preserveAspectRatio="none"
             className="absolute inset-0 h-full w-full"
             aria-hidden
@@ -165,7 +170,7 @@ export function ProcessRoadmap({ steps }: { steps: RoadmapStep[] }) {
             <span
               key={`b-${step.label}`}
               className="absolute h-14 w-14 -translate-x-1/2 -translate-y-1/2 sm:h-[4.75rem] sm:w-[4.75rem] md:h-[5.5rem] md:w-[5.5rem]"
-              style={{ left: `${nodes[i].x}%`, top: `${((i + 0.5) / n) * 100}%` }}
+              style={{ left: `${nodes[i].x}%`, top: pct(nodes[i].y) }}
             >
               <Badge index={i} current={step.status === "current"} />
             </span>
@@ -182,7 +187,7 @@ export function ProcessRoadmap({ steps }: { steps: RoadmapStep[] }) {
                   ? "left-0 right-[46%] pr-3 text-right sm:right-[48%] sm:pr-4"
                   : "left-[46%] right-0 pl-3 text-left sm:left-[48%] sm:pl-4"
               )}
-              style={{ top: `${((i + 0.5) / n) * 100}%` }}
+              style={{ top: pct(nodes[i].y) }}
             >
               <p
                 className="text-[0.55rem] font-bold uppercase tracking-[0.14em] sm:text-[0.65rem] md:text-xs"
