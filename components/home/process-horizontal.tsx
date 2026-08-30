@@ -68,7 +68,7 @@ export function ProcessHorizontal() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden py-14 md:h-screen md:py-0">
+    <section ref={sectionRef} className="relative overflow-hidden py-12 md:h-screen md:py-0">
       <div className="mx-auto flex h-full max-w-container flex-col justify-center px-6">
         <div className="mb-8 md:mb-12">
           <p className="text-sm font-semibold uppercase tracking-[0.22em] text-primary">How it works</p>

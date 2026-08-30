@@ -236,8 +236,8 @@ body {
 
   /* ---- Section rhythm ------------------------------------------------- */
   .section-y {
-    padding-top: clamp(3.5rem, 9vw, 8rem);
-    padding-bottom: clamp(3.5rem, 9vw, 8rem);
+    padding-top: clamp(3rem, 7vw, 6rem);
+    padding-bottom: clamp(3rem, 7vw, 6rem);
   }
 }
 

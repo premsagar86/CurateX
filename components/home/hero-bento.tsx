@@ -33,9 +33,6 @@ const HERO_TILES = [
   { stat: "48h", label: "first draft" },
   { stat: "90d", label: "support window" },
   { stat: "1:1", label: "client comms" },
-  // ZOOM_INDEX — the glowing card. Kept near the middle of the field so the
-  // scroll zoom pushes straight into it rather than off toward a corner.
-  { stat: "8", label: "services, one team" },
   { stat: "0", label: "surprise invoices" },
   { stat: "5★", label: "review average" },
   { stat: "100%", label: "own your code" },
@@ -45,6 +42,9 @@ const HERO_TILES = [
   { stat: "0", label: "hidden fees" },
   { stat: "100%", label: "responsive" },
   { stat: "15+", label: "industries" },
+  // ZOOM_INDEX — the glowing card. Sits near the centre of the field so the
+  // scroll zoom pushes straight into it rather than off toward a corner.
+  { stat: "8", label: "services, one team" },
   { stat: "99.9%", label: "uptime" },
   { stat: "1wk", label: "design sprint" },
   { stat: "2x", label: "faster launch" },
@@ -52,25 +52,52 @@ const HERO_TILES = [
   { stat: "∞", label: "care after launch" },
   { stat: "1", label: "project lead" },
   { stat: "A+", label: "perf budget" },
+  { stat: "12wk", label: "retainer min" },
+  { stat: "0", label: "lock-in" },
+  { stat: "3d", label: "site audit" },
+  { stat: "4", label: "check-in calls" },
+  { stat: "1", label: "clear invoice" },
+  { stat: "2", label: "designers on it" },
+  { stat: "100%", label: "mobile-first" },
+  { stat: "1", label: "codebase" },
+  { stat: "0", label: "ghosting" },
+  { stat: "8–8", label: "support hours" },
+  { stat: "30m", label: "kickoff call" },
+  { stat: "100%", label: "on-brand" },
+  { stat: "1", label: "team, end to end" },
 ];
-const ZOOM_INDEX = 18;
+const ZOOM_INDEX = 27;
 
 // The scattered field + the pinned "becoming" moment are desktop-only. On
 // phones the field is display:none, and pinning the section for ~2 extra
 // viewport-heights just produced a large stretch of empty scroll.
 const DESKTOP_MOTION_QUERY = "(prefers-reduced-motion: no-preference) and (min-width: 768px)";
 
-// Restrained rotation / offset for the wrapper (never the GSAP-animated
-// `.hero-tile`) so the loose layout and the scroll animation don't fight
-// over `transform`.
-const TILE_SCATTER = [
-  "rotate-[-3deg] translate-y-1",
-  "rotate-[3deg] -translate-y-1",
-  "rotate-[-2deg] translate-y-1.5",
-  "rotate-[3deg] translate-y-0.5",
-  "rotate-[-3deg] -translate-y-1",
-  "rotate-[2deg] translate-y-1",
-];
+// Scatter layout: each tile gets a slot on a coarse lattice that covers the
+// whole hero, then a deterministic per-tile nudge in x/y plus its own
+// rotation, scale and opacity — so the field fills the section and never
+// reads as neat rows/columns. Seeded by index so SSR and client agree.
+const SCATTER_COLS = 8;
+const SCATTER_ROWS = 6;
+
+function tileLayout(i: number) {
+  const col = i % SCATTER_COLS;
+  const row = Math.floor(i / SCATTER_COLS);
+  const rand = (n: number) => {
+    const s = Math.sin((i + 1) * 12.9898 + n * 78.233) * 43758.5453;
+    return s - Math.floor(s);
+  };
+  const cellW = 100 / SCATTER_COLS;
+  const cellH = 100 / SCATTER_ROWS;
+  const clamp = (v: number) => Math.min(99, Math.max(1, v));
+  return {
+    x: clamp((col + 0.5) * cellW + (rand(1) - 0.5) * cellW * 1.2),
+    y: clamp((row + 0.5) * cellH + (rand(2) - 0.5) * cellH * 1.2),
+    rot: (rand(3) - 0.5) * 22,
+    scale: 0.58 + rand(4) * 0.8,
+    opacity: 0.13 + rand(5) * 0.26,
+  };
+}
 
 export function HeroBento() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -142,11 +169,11 @@ export function HeroBento() {
       mm.add(DESKTOP_MOTION_QUERY, () => {
         gsap.from(".hero-tile, .hero-tile-zoom, .hero-ghost", {
           autoAlpha: 0,
-          y: 32,
-          scale: 0.85,
-          duration: 0.9,
+          y: 28,
+          scale: 0.8,
+          duration: 0.8,
           ease: EASE.smooth,
-          stagger: 0.05,
+          stagger: { each: 0.012, from: "random" },
           delay: 0.3,
         });
 
@@ -163,15 +190,13 @@ export function HeroBento() {
           contentRef.current &&
           revealRef.current
         ) {
-          // Aim the zoom at the focal cell. Measure with the grid's slant
-          // removed so the origin is in the grid's own coordinate space,
-          // then restore the slant for the timeline to unwind.
-          gsap.set(tileGridRef.current, { rotate: 0 });
+          // Aim the zoom at the focal cell — the field container fills the
+          // section, so the cell's centre as a fraction of it is the origin.
           const gridRect = tileGridRef.current.getBoundingClientRect();
           const cellRect = focalCellRef.current.getBoundingClientRect();
           const originX = (((cellRect.left + cellRect.width / 2) - gridRect.left) / gridRect.width) * 100;
           const originY = (((cellRect.top + cellRect.height / 2) - gridRect.top) / gridRect.height) * 100;
-          gsap.set(tileGridRef.current, { rotate: 5, transformOrigin: `${originX}% ${originY}%` });
+          gsap.set(tileGridRef.current, { transformOrigin: `${originX}% ${originY}%` });
           gsap.set(contentRef.current, { transformOrigin: "50% 50%" });
           gsap.set(focalCellRef.current, { transformOrigin: "50% 50%" });
 
@@ -193,7 +218,7 @@ export function HeroBento() {
           // scale flings the (now tiny, denser) tiles off-screen; the focal
           // cell takes an extra scale of its own so it still fills the frame
           // exactly as before despite being a quarter the size.
-          tl.to(tileGridRef.current, { scale: 11, rotate: 0, ease: "none", duration: 1 }, 0)
+          tl.to(tileGridRef.current, { scale: 11, ease: "none", duration: 1 }, 0)
             .to(focalCellRef.current, { scale: 2.4, ease: "none", duration: 1 }, 0)
             .to(contentRef.current, { scale: 1.5, autoAlpha: 0, ease: "power1.in", duration: 0.4 }, 0)
             .to([washRef.current, glowRef.current, ghostRef.current], { autoAlpha: 0, duration: 0.35 }, 0)
@@ -238,7 +263,7 @@ export function HeroBento() {
   return (
     <section
       ref={sectionRef}
-      className="relative isolate flex min-h-[calc(100svh_-_var(--nav-h))] items-center overflow-clip px-6 py-16 sm:py-20 md:py-28"
+      className="relative isolate flex min-h-[calc(100svh_-_var(--nav-h))] items-center overflow-clip px-6 py-14 sm:py-16 md:py-20"
     >
       {/* ---- Atmospheric background layer (z-decor) ---------------------- */}
       <div className="pointer-events-none absolute inset-0 z-[var(--z-decor)]" aria-hidden>
@@ -273,51 +298,68 @@ export function HeroBento() {
           <path d="M240 380 L400 150" opacity="0.2" />
         </svg>
 
-        {/* Scattered stat-tile field — desktop only; a reduced, low-contrast
-            interface texture that the user discovers on a second look. */}
-        <div className="absolute inset-0 hidden items-center justify-center md:flex">
-          <div
-            ref={tileGridRef}
-            className="grid w-full max-w-[120rem] grid-cols-8 gap-2 rotate-[5deg] px-2 lg:grid-cols-12 lg:gap-2.5"
-          >
-            {HERO_TILES.map((tile, i) =>
-              i === ZOOM_INDEX ? (
-                <div key={`${tile.label}-${i}`} ref={focalCellRef} className="relative z-[1] aspect-square">
-                  <div
-                    aria-hidden
-                    className="hero-ghost absolute inset-0 translate-x-1 translate-y-1 rotate-1 rounded-md border border-home-border bg-home-surface/30"
-                  />
-                  <div
-                    ref={tileRef}
-                    className="hero-tile-zoom glass absolute inset-0 flex flex-col items-center justify-center rounded-md text-center shadow-glow-accent ring-1 ring-accent/45"
-                  >
-                    <div className="tile-label px-1">
-                      <p className="font-display text-sm leading-none text-home-text">{tile.stat}</p>
-                      <p className="mt-0.5 text-[0.5rem] uppercase tracking-wide text-home-muted">{tile.label}</p>
-                    </div>
-                  </div>
-                </div>
-              ) : (
+        {/* Scattered stat-tile field — desktop only. Tiles are absolutely
+            placed on a jittered lattice (see tileLayout) so the field fills
+            the whole hero instead of forming rows/columns. */}
+        <div ref={tileGridRef} className="absolute inset-0 hidden md:block">
+          {HERO_TILES.map((tile, i) => {
+            const L = tileLayout(i);
+            const place = { left: `${L.x}%`, top: `${L.y}%` } as const;
+
+            if (i === ZOOM_INDEX) {
+              return (
                 <div
                   key={`${tile.label}-${i}`}
-                  className={`aspect-square ${TILE_SCATTER[i % TILE_SCATTER.length]}`}
+                  ref={focalCellRef}
+                  className="absolute z-[1] w-[7rem] lg:w-[8.5rem]"
+                  style={{ ...place, transform: "translate(-50%, -50%) rotate(-2deg)" }}
                 >
-                  <div
-                    className={`motion-decor h-full w-full ${i % 2 ? "animate-drift" : "animate-float"}`}
-                    style={{
-                      animationDelay: `${(i % 5) * -2.1}s`,
-                      animationDuration: `${11 + (i % 4)}s`,
-                    }}
-                  >
-                    <div className="hero-tile decor-panel flex h-full w-full flex-col justify-between rounded-md p-1.5 opacity-[0.32] blur-[0.6px]">
-                      <p className="font-display text-[0.72rem] leading-none text-home-text">{tile.stat}</p>
-                      <p className="text-[0.46rem] uppercase leading-none tracking-wide text-home-muted">{tile.label}</p>
+                  <div className="relative aspect-square">
+                    <div
+                      aria-hidden
+                      className="hero-ghost absolute inset-0 translate-x-1 translate-y-1 rotate-1 rounded-md border border-home-border bg-home-surface/30"
+                    />
+                    <div
+                      ref={tileRef}
+                      className="hero-tile-zoom glass absolute inset-0 flex flex-col items-center justify-center rounded-md text-center shadow-glow-accent ring-1 ring-accent/45"
+                    >
+                      <div className="tile-label px-1">
+                        <p className="font-display text-sm leading-none text-home-text">{tile.stat}</p>
+                        <p className="mt-0.5 text-[0.5rem] uppercase tracking-wide text-home-muted">{tile.label}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              )
-            )}
-          </div>
+              );
+            }
+
+            return (
+              <div
+                key={`${tile.label}-${i}`}
+                className="absolute w-[4rem] lg:w-[5rem]"
+                style={{
+                  ...place,
+                  transform: `translate(-50%, -50%) rotate(${L.rot}deg) scale(${L.scale})`,
+                }}
+              >
+                <div
+                  className={`motion-decor ${i % 2 ? "animate-drift" : "animate-float"}`}
+                  style={{
+                    animationDelay: `${(i % 7) * -1.9}s`,
+                    animationDuration: `${10 + (i % 5)}s`,
+                  }}
+                >
+                  <div
+                    className="hero-tile decor-panel flex aspect-square w-full flex-col justify-between rounded-md p-1.5 blur-[0.6px]"
+                    style={{ opacity: L.opacity }}
+                  >
+                    <p className="font-display text-[0.72rem] leading-none text-home-text">{tile.stat}</p>
+                    <p className="text-[0.46rem] uppercase leading-none tracking-wide text-home-muted">{tile.label}</p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 

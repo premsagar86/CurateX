@@ -84,7 +84,7 @@ export function CtaFinale() {
             {/* Outer node owns the scroll parallax; inner owns the idle float
                 so the two transforms never fight over `transform`. */}
             <div
-              className={`decor-card motion-decor w-48 p-5 opacity-[0.38] lg:w-64 lg:p-6 ${fragment.spin} ${
+              className={`decor-card motion-decor w-48 p-5 opacity-[0.5] lg:w-64 lg:p-6 ${fragment.spin} ${
                 i % 2 ? "animate-drift" : "animate-float"
               }`}
             >
@@ -114,7 +114,7 @@ export function CtaFinale() {
 
       {/* Mobile: fragments move in-flow as a calm 2×2 group so they never
           sit under the copy. */}
-      <div className="relative z-[var(--z-content)] mt-12 grid w-full max-w-sm grid-cols-2 gap-3 opacity-75 md:hidden">
+      <div className="relative z-[var(--z-content)] mt-12 grid w-full max-w-sm grid-cols-2 gap-3 opacity-90 md:hidden">
         {FRAGMENTS.map((fragment) => (
           <div key={fragment.label} className="decor-card flex flex-col gap-1.5 p-4">
             <p className="font-display text-xl leading-none text-home-text">{fragment.value}</p>
