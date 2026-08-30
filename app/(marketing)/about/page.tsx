@@ -6,19 +6,19 @@ import Link from "next/link";
 
 const FOUNDERS = [
   {
-    name: "Founder 1",
-    role: "Business & Growth Lead",
-    blurb: "Owns sales, client relationships, finance, and day-to-day operations.",
+    name: "Bavana Sruthi",
+    role: "Co-Founder & Design Lead",
+    blurb: "",
   },
   {
-    name: "Founder 2",
-    role: "Design & Brand Lead",
-    blurb: "Owns brand, UI/UX, creative direction, and content/social strategy.",
+    name: "Selvin Joel",
+    role: "Co-Founder & Engineering Lead",
+    blurb: "",
   },
   {
-    name: "Founder 3",
-    role: "Technology & Product Lead",
-    blurb: "Owns engineering, architecture, platform, and security.",
+    name: "Prem Sagar",
+    role: "CEO & Co-Founder",
+    blurb: "",
   },
 ];
 
@@ -40,7 +40,7 @@ export default function AboutPage() {
       <Section heading="Founders">
         <div className="grid gap-6 sm:grid-cols-3">
           {FOUNDERS.map((founder) => (
-            <div key={founder.name} className="rounded-lg border border-border p-6 text-center">
+            <div key={founder.name} className="rounded-lg border border-border p-20 text-center transition hover:scale-105 duration-1000 hover:border-zinc-700">
               <Avatar name={founder.name} size="lg" className="mx-auto" />
               <p className="mt-4 font-medium">{founder.name}</p>
               <p className="text-sm text-primary">{founder.role}</p>
