@@ -85,11 +85,27 @@ export default {
           "0%, 100%": { opacity: "0.55", transform: "scale(1)" },
           "50%": { opacity: "0.8", transform: "scale(1.04)" },
         },
+        // Loading screen — a calm breathing glow + an indeterminate sweep.
+        "loader-breathe": {
+          "0%, 100%": { opacity: "0.35", transform: "scale(0.9)" },
+          "50%": { opacity: "0.7", transform: "scale(1.08)" },
+        },
+        "loader-sweep": {
+          "0%": { transform: "translateX(-120%)" },
+          "100%": { transform: "translateX(360%)" },
+        },
+        "loader-rise": {
+          "0%": { opacity: "0", transform: "translateY(8px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
       },
       animation: {
         float: "float 9s ease-in-out infinite",
         drift: "drift 13s ease-in-out infinite",
         "pulse-glow": "pulse-glow 5s ease-in-out infinite",
+        "loader-breathe": "loader-breathe 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite",
+        "loader-sweep": "loader-sweep 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite",
+        "loader-rise": "loader-rise 0.5s cubic-bezier(0, 0, 0.2, 1) both",
       },
     },
   },

@@ -4,7 +4,10 @@ import { cn } from "@/lib/utils";
 import { forwardRef, type ButtonHTMLAttributes } from "react";
 
 export const buttonVariants = cva(
-  "inline-flex items-center justify-center rounded-md font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-50 disabled:pointer-events-none",
+  // `min-h` + `py` (not a fixed `h`) and `whitespace-normal` so a long label
+  // wraps and the box grows instead of the text bleeding out on narrow
+  // screens; `text-center`/`leading-tight` keep wrapped labels tidy.
+  "inline-flex items-center justify-center gap-2 whitespace-normal rounded-md text-center font-semibold leading-tight transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-50 disabled:pointer-events-none",
   {
     variants: {
       variant: {
@@ -15,9 +18,9 @@ export const buttonVariants = cva(
         destructive: "bg-error text-white hover:opacity-90",
       },
       size: {
-        sm: "h-9 px-3 text-sm",
-        md: "h-11 px-4",
-        lg: "h-12 px-6 text-lg",
+        sm: "min-h-9 px-3 py-1.5 text-sm",
+        md: "min-h-11 px-4 py-2",
+        lg: "min-h-12 px-6 py-2.5 text-base sm:text-lg",
       },
     },
     defaultVariants: { variant: "primary", size: "md" },

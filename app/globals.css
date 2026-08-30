@@ -146,8 +146,16 @@ body {
   .motion-decor,
   .animate-float,
   .animate-drift,
-  .animate-pulse-glow {
+  .animate-pulse-glow,
+  .animate-loader-breathe,
+  .animate-loader-sweep,
+  .animate-loader-rise {
     animation: none !important;
+  }
+  /* With the sweep frozen, show a settled bar instead of a stalled sliver. */
+  .loader-track > * {
+    width: 100% !important;
+    transform: none !important;
   }
 }
 
@@ -191,13 +199,18 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 3rem;
+    /* min-height + block padding (not a fixed height) so a long label wraps
+       and the pill grows rather than the text bleeding out on mobile. */
+    min-height: 3rem;
+    padding-block: 0.55rem;
     padding-inline: 1.75rem;
     border-radius: var(--radius-full);
     font-weight: 600;
     font-size: 0.95rem;
-    line-height: 1;
-    white-space: nowrap;
+    line-height: 1.15;
+    text-align: center;
+    white-space: normal;
+    text-wrap: balance;
     transition:
       transform var(--duration-base) var(--ease-standard),
       background-color var(--duration-base) var(--ease-standard),
@@ -205,7 +218,7 @@ body {
       color var(--duration-base) var(--ease-standard);
   }
   .btn-pill-lg {
-    height: 3.5rem;
+    min-height: 3.5rem;
     padding-inline: 2.25rem;
     font-size: 1rem;
   }

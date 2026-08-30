@@ -6,10 +6,9 @@ import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 
 // Long, specific CTA labels ("Get a quote for Website Design & Development")
-// overflow a fixed-height pill on narrow screens. This lets the button wrap
-// and grow, and steps the type down below sm so it always stays in the box.
-const heroCtaClass =
-  "h-auto min-h-12 w-full max-w-full whitespace-normal py-2.5 text-center text-base leading-tight sm:w-auto sm:text-lg";
+// are common here — full-width stacked on mobile so they have room (the
+// button primitive already handles wrapping + type size).
+const heroCtaClass = "w-full max-w-full sm:w-auto";
 
 export interface HeroProps {
   eyebrow?: string;
