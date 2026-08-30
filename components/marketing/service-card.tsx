@@ -36,8 +36,9 @@ export function ServiceCard({ service, compact = false }: { service: Service; co
           className="pointer-events-none absolute inset-0 bg-primary/[0.07] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
         />
 
-        {/* Content — clears out on hover (sm+) so only the centred prompt shows. */}
-        <div className="relative transition-opacity duration-300 sm:group-hover:opacity-0">
+        {/* Content stays fully visible on hover; only the "Explore more"
+            prompt (pinned to the bottom-left corner) fades in. */}
+        <div className="relative flex h-full flex-col">
           <h3 className="break-words font-display text-[0.82rem] leading-[1.15] sm:text-lg sm:leading-tight">
             <span className="sm:hidden">{SHORT_NAMES[service.slug] ?? service.name}</span>
             <span className="hidden sm:inline">{service.name}</span>
@@ -48,14 +49,7 @@ export function ServiceCard({ service, compact = false }: { service: Service; co
               Starting at ₹{startingPrice.toLocaleString("en-IN")}
             </p>
           )}
-        </div>
-
-        {/* Centred hover prompt — sm+ only (no hover state on touch). */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 z-[1] hidden items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:flex"
-        >
-          <span className="inline-flex items-center gap-2 font-display text-lg text-primary">
+          <span className="mt-auto hidden items-center gap-1.5 pt-5 text-sm font-medium text-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:inline-flex">
             Explore more <span aria-hidden>&rarr;</span>
           </span>
         </div>

@@ -59,43 +59,35 @@ function ServiceTile({ service, index }: { service: Service; index: number }) {
         />
 
         {/* Editorial index numeral — sm+ only; it would blow out a compact
-            mobile tile. Clears on hover with the rest of the content. */}
+            mobile tile. */}
         <span
           aria-hidden
-          className="decor-numeral absolute bottom-3 right-4 z-0 hidden transition-opacity duration-300 sm:block sm:text-[7rem] sm:group-hover:opacity-0"
+          className="decor-numeral absolute bottom-3 right-4 z-0 hidden sm:block sm:text-[7rem]"
         >
           {number}
         </span>
 
-        {/* Content — fixed order: eyebrow → title → description. Clears out on
-            hover (sm+) so only the centred prompt shows. */}
+        {/* Content — fixed order: eyebrow → title → description → action. Stays
+            fully visible on hover; only the "Explore more" prompt (pinned to
+            the bottom-left corner) fades in. */}
         <Link
           href={`/services/${service.slug}`}
           className="relative z-[1] flex h-full flex-col focus-visible:outline-none"
         >
-          <div className="transition-opacity duration-300 sm:group-hover:opacity-0">
-            <span className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-primary/80 sm:text-xs sm:tracking-[0.18em]">
-              {number}
-            </span>
-            <h3 className="mt-1 break-words font-display text-[0.82rem] leading-[1.15] text-home-text sm:mt-3 sm:pr-10 sm:text-xl sm:leading-tight">
-              <span className="sm:hidden">{SHORT_NAMES[service.slug] ?? service.name}</span>
-              <span className="hidden sm:inline">{service.name}</span>
-            </h3>
-            <p className="mt-2 hidden line-clamp-2 pr-12 text-sm leading-relaxed text-home-muted sm:block">
-              {service.oneLiner}
-            </p>
-          </div>
-        </Link>
-
-        {/* Centred hover prompt — sm+ only (no hover state on touch). */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 z-[2] hidden items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:flex"
-        >
-          <span className="inline-flex items-center gap-2 font-display text-lg text-primary">
+          <span className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-primary/80 sm:text-xs sm:tracking-[0.18em]">
+            {number}
+          </span>
+          <h3 className="mt-1 break-words font-display text-[0.82rem] leading-[1.15] text-home-text sm:mt-3 sm:pr-10 sm:text-xl sm:leading-tight">
+            <span className="sm:hidden">{SHORT_NAMES[service.slug] ?? service.name}</span>
+            <span className="hidden sm:inline">{service.name}</span>
+          </h3>
+          <p className="mt-2 hidden line-clamp-2 pr-12 text-sm leading-relaxed text-home-muted sm:block">
+            {service.oneLiner}
+          </p>
+          <span className="mt-auto hidden items-center gap-1.5 pt-5 text-sm font-medium text-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:inline-flex">
             Explore more <span aria-hidden>&rarr;</span>
           </span>
-        </div>
+        </Link>
       </div>
     </div>
   );
