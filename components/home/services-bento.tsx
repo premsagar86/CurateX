@@ -59,21 +59,21 @@ function ServiceTile({ service, index }: { service: Service; index: number }) {
         />
 
         {/* Editorial index numeral — sm+ only; it would blow out a compact
-            mobile tile. */}
+            mobile tile. Clears on hover with the rest of the content. */}
         <span
           aria-hidden
-          className="decor-numeral absolute bottom-3 right-4 z-0 hidden sm:block sm:text-[7rem]"
+          className="decor-numeral absolute bottom-3 right-4 z-0 hidden transition-opacity duration-300 sm:block sm:text-[7rem] sm:group-hover:opacity-0"
         >
           {number}
         </span>
 
-        {/* Content — fixed order: eyebrow → title → description. Recedes on
-            hover (sm+) so the centred prompt reads clearly. */}
+        {/* Content — fixed order: eyebrow → title → description. Clears out on
+            hover (sm+) so only the centred prompt shows. */}
         <Link
           href={`/services/${service.slug}`}
           className="relative z-[1] flex h-full flex-col focus-visible:outline-none"
         >
-          <div className="transition-opacity duration-300 sm:group-hover:opacity-40">
+          <div className="transition-opacity duration-300 sm:group-hover:opacity-0">
             <span className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-primary/80 sm:text-xs sm:tracking-[0.18em]">
               {number}
             </span>
