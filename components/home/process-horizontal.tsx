@@ -68,9 +68,9 @@ export function ProcessHorizontal() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden py-20 md:h-screen md:py-0">
+    <section ref={sectionRef} className="relative overflow-hidden py-14 md:h-screen md:py-0">
       <div className="mx-auto flex h-full max-w-container flex-col justify-center px-6">
-        <div className="mb-12">
+        <div className="mb-8 md:mb-12">
           <p className="text-sm font-semibold uppercase tracking-[0.22em] text-primary">How it works</p>
           <h2 className="mt-4 font-display text-display-2 text-home-text">A process you can actually see</h2>
         </div>
@@ -79,7 +79,7 @@ export function ProcessHorizontal() {
           {STEPS.map((step, index) => (
             <div
               key={step.title}
-              className="process-card glass flex w-[78vw] shrink-0 flex-col rounded-lg p-8 sm:w-[400px] md:w-[36vw] lg:w-[28vw]"
+              className="process-card glass flex w-[80vw] shrink-0 flex-col rounded-lg p-6 sm:w-[400px] sm:p-8 md:w-[36vw] lg:w-[28vw]"
             >
               <span className="font-display text-6xl leading-none text-primary/45">0{index + 1}</span>
               <p className="mt-5 font-display text-2xl text-home-text">{step.title}</p>

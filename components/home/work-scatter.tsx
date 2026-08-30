@@ -2,7 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useRef } from "react";
-import { getGsap, EASE, MOTION_OK_QUERY } from "./motion/gsap-setup";
+import { getGsap, EASE } from "./motion/gsap-setup";
+
+// The Flip scatter + depth parallax is desktop-only. On a single-column
+// mobile layout the randomised offsets just fought the flow; cards render
+// statically there (they already carry real content).
+const DESKTOP_MOTION_QUERY = "(prefers-reduced-motion: no-preference) and (min-width: 768px)";
 
 export interface WorkItem {
   id: string;
@@ -29,7 +34,7 @@ export function WorkScatter({ items }: { items: WorkItem[] }) {
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
 
-      mm.add(MOTION_OK_QUERY, () => {
+      mm.add(DESKTOP_MOTION_QUERY, () => {
         const cards = gsap.utils.toArray<HTMLElement>(".work-card", containerRef.current!);
         if (cards.length === 0) return;
 
@@ -78,7 +83,7 @@ export function WorkScatter({ items }: { items: WorkItem[] }) {
 
   return (
     <section className="section-y relative mx-auto max-w-container px-6 [perspective:1400px]">
-      <div className="mb-14 max-w-2xl">
+      <div className="mb-10 max-w-2xl md:mb-14">
         <p className="text-sm font-semibold uppercase tracking-[0.22em] text-primary">Work</p>
         <h2 className="mt-4 font-display text-display-2 text-home-text">Recent projects</h2>
       </div>

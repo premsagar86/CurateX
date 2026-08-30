@@ -28,7 +28,7 @@ function PricingCard({ pkg }: { pkg: Package }) {
   return (
     <div
       data-reveal
-      className={`relative flex h-full flex-col rounded-lg border p-8 ${
+      className={`relative flex h-full flex-col rounded-lg border p-6 sm:p-8 ${
         featured
           ? "border-primary/45 bg-home-surface-2 shadow-glow-primary"
           : "border-home-border bg-home-surface"
@@ -85,7 +85,7 @@ export function PricingBento({ packages }: { packages: Package[] }) {
 
   return (
     <section className="section-y relative mx-auto max-w-container px-6">
-      <div className="mb-14 max-w-2xl">
+      <div className="mb-10 max-w-2xl md:mb-14">
         <p className="text-sm font-semibold uppercase tracking-[0.22em] text-primary">Pricing</p>
         <h2 className="mt-4 font-display text-display-2 text-home-text">Transparent, productized pricing</h2>
         <p className="mt-4 max-w-prose text-home-muted">

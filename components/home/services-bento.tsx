@@ -18,7 +18,7 @@ function ServiceTile({ service, index }: { service: Service; index: number }) {
 
   return (
     <div
-      className="h-full animate-float"
+      className="h-full sm:animate-float"
       style={{
         animationDelay: `${(index % 4) * -1.5}s`,
         animationDuration: `${8 + (index % 3)}s`,
@@ -27,7 +27,7 @@ function ServiceTile({ service, index }: { service: Service; index: number }) {
       <div
         ref={ref}
         data-reveal
-        className="group relative flex h-full min-h-[16rem] flex-col overflow-hidden rounded-lg border border-home-border bg-home-surface p-6"
+        className="group relative flex h-full min-h-[12rem] flex-col overflow-hidden rounded-lg border border-home-border bg-home-surface p-6 sm:min-h-[16rem]"
       >
         {/* Cursor-follow highlight. */}
         <div
@@ -43,7 +43,7 @@ function ServiceTile({ service, index }: { service: Service; index: number }) {
             (title pr-10, description pr-12) so it never overlaps. */}
         <span
           aria-hidden
-          className="decor-numeral absolute bottom-3 right-4 z-0 text-[7rem]"
+          className="decor-numeral absolute bottom-3 right-4 z-0 text-[4.5rem] sm:text-[7rem]"
         >
           {number}
         </span>
@@ -79,7 +79,7 @@ export function ServicesBento({ services }: { services: Service[] }) {
 
   return (
     <section className="section-y relative mx-auto max-w-container px-6">
-      <div className="mb-14 max-w-2xl">
+      <div className="mb-10 max-w-2xl md:mb-14">
         <p className="text-sm font-semibold uppercase tracking-[0.22em] text-primary">What we do</p>
         <h2 className="mt-4 font-display text-display-2 text-home-text">Eight services, one accountable team</h2>
         <p className="mt-4 max-w-prose text-home-muted">

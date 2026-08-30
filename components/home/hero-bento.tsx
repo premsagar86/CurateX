@@ -32,6 +32,11 @@ const HERO_TILES = [
 // headline while still part of the field.
 const ZOOM_INDEX = 4;
 
+// The scattered field + the pinned "becoming" moment are desktop-only. On
+// phones the field is display:none, and pinning the section for ~2 extra
+// viewport-heights just produced a large stretch of empty scroll.
+const DESKTOP_MOTION_QUERY = "(prefers-reduced-motion: no-preference) and (min-width: 768px)";
+
 // Restrained rotation / offset for the wrapper (never the GSAP-animated
 // `.hero-tile`) so the loose layout and the scroll animation don't fight
 // over `transform`.
@@ -49,6 +54,8 @@ export function HeroBento() {
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const tileGridRef = useRef<HTMLDivElement>(null);
   const tileRef = useRef<HTMLDivElement>(null);
+  const focalCellRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const revealRef = useRef<HTMLDivElement>(null);
   const washRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
@@ -62,6 +69,7 @@ export function HeroBento() {
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
 
+      // Type + atmosphere: every screen (reduced-motion aside).
       mm.add(MOTION_OK_QUERY, () => {
         if (headlineRef.current) {
           const split = new SplitText(headlineRef.current, { type: "lines,words" });
@@ -83,14 +91,15 @@ export function HeroBento() {
           { scale: 1, autoAlpha: 1, duration: 1.4, ease: EASE.smooth }
         );
 
-        gsap.from(".hero-tile, .hero-tile-zoom, .hero-ghost", {
+        // Mobile-only stat chips (see markup) — settle in after the headline.
+        gsap.from(".hero-mobile-tile", {
           autoAlpha: 0,
-          y: 32,
-          scale: 0.85,
-          duration: 0.9,
+          y: 24,
+          scale: 0.9,
+          duration: 0.7,
           ease: EASE.smooth,
-          stagger: 0.05,
-          delay: 0.3,
+          stagger: 0.08,
+          delay: 0.35,
         });
 
         // Gentle parallax on the atmospheric layer only.
@@ -104,44 +113,89 @@ export function HeroBento() {
           ease: "none",
           scrollTrigger: { trigger: sectionRef.current, start: "top top", end: "bottom top", scrub: 1.2 },
         });
+      });
 
-        // Signature moment: the slanted tile field un-slants, the filler tiles
-        // clear out, and the ZOOM tile pins + scales to fill the viewport,
-        // cross-fading into a preview of the next section. Overlay is fully
-        // gone before the pin releases so the handoff is clean.
-        if (sectionRef.current && tileGridRef.current && tileRef.current && revealRef.current) {
+      // Scattered tile field + the pinned "becoming" moment: desktop only.
+      mm.add(DESKTOP_MOTION_QUERY, () => {
+        gsap.from(".hero-tile, .hero-tile-zoom, .hero-ghost", {
+          autoAlpha: 0,
+          y: 32,
+          scale: 0.85,
+          duration: 0.9,
+          ease: EASE.smooth,
+          stagger: 0.05,
+          delay: 0.3,
+        });
+
+        // Signature moment: one unbroken, scroll-driven push-in aimed at the
+        // highlighted "8 / services, one team" tile. The field scales toward
+        // that card for the whole pin — it never stops — and the card's words
+        // cross-dissolve into the "Eight services, one accountable team"
+        // section title, which is what you land on. No hard cut.
+        if (
+          sectionRef.current &&
+          tileGridRef.current &&
+          tileRef.current &&
+          focalCellRef.current &&
+          contentRef.current &&
+          revealRef.current
+        ) {
+          // Aim the zoom at the focal cell. Measure with the grid's slant
+          // removed so the origin is in the grid's own coordinate space,
+          // then restore the slant for the timeline to unwind.
+          gsap.set(tileGridRef.current, { rotate: 0 });
+          const gridRect = tileGridRef.current.getBoundingClientRect();
+          const cellRect = focalCellRef.current.getBoundingClientRect();
+          const originX = (((cellRect.left + cellRect.width / 2) - gridRect.left) / gridRect.width) * 100;
+          const originY = (((cellRect.top + cellRect.height / 2) - gridRect.top) / gridRect.height) * 100;
+          gsap.set(tileGridRef.current, { rotate: 5, transformOrigin: `${originX}% ${originY}%` });
+          gsap.set(contentRef.current, { transformOrigin: "50% 50%" });
+
           const tl = gsap.timeline({
             scrollTrigger: {
               trigger: sectionRef.current,
               start: "top top",
-              end: "+=180%",
+              end: "+=170%",
               scrub: 1,
               pin: true,
               pinSpacing: true,
               anticipatePin: 1,
+              invalidateOnRefresh: true,
             },
           });
 
-          tl.to(headlineRef.current, { autoAlpha: 0, yPercent: -12, duration: 0.3 }, 0)
-            .to(".hero-sub, .hero-cta", { autoAlpha: 0, y: -20, duration: 0.25 }, 0)
-            .to(".hero-eyebrow", { autoAlpha: 0, y: -16, duration: 0.25 }, 0)
-            .to([washRef.current, ghostRef.current, glowRef.current], { autoAlpha: 0, duration: 0.3 }, 0)
-            .to(tileGridRef.current, { rotate: 0, x: 0, duration: 0.4, ease: EASE.smooth }, 0)
-            .to(".hero-tile, .hero-ghost", { autoAlpha: 0, scale: 0.6, duration: 0.3, stagger: 0.03 }, 0.05)
+          // Continuous zoom: linear scale across the whole pin so it tracks
+          // the scrollbar 1:1 and never eases to a halt mid-move.
+          tl.to(tileGridRef.current, { scale: 11, rotate: 0, ease: "none", duration: 1 }, 0)
+            .to(contentRef.current, { scale: 1.5, autoAlpha: 0, ease: "power1.in", duration: 0.4 }, 0)
+            .to([washRef.current, glowRef.current, ghostRef.current], { autoAlpha: 0, duration: 0.35 }, 0)
+            .to(".hero-tile, .hero-ghost", { autoAlpha: 0, duration: 0.3, stagger: 0.02 }, 0.04)
+            // The focal card sheds its frame so no giant panel edge sweeps the
+            // screen — it just becomes the space we move into.
             .to(
               tileRef.current,
-              { scale: 30, rotate: 0, borderRadius: 0, duration: 0.7, ease: EASE.smooth },
-              0.15
+              {
+                backgroundColor: "rgba(0,0,0,0)",
+                borderColor: "rgba(0,0,0,0)",
+                boxShadow: "0px 0px 0px rgba(0,0,0,0)",
+                duration: 0.3,
+              },
+              0.16
             )
-            .to(tileRef.current.querySelector(".tile-label"), { autoAlpha: 0, duration: 0.2 }, 0.15)
+            // Reveal strengthens while the card is still growing (overlap, no
+            // gap); the card's own label fades on the same stretch so the
+            // wording is continuous rather than swapped.
             .fromTo(
               revealRef.current,
-              { autoAlpha: 0, yPercent: 8 },
-              { autoAlpha: 1, yPercent: 0, duration: 0.35 },
-              0.42
+              { autoAlpha: 0, scale: 1.08 },
+              { autoAlpha: 1, scale: 1, ease: "none", duration: 0.5 },
+              0.28
             )
-            .to([tileRef.current, revealRef.current], { autoAlpha: 0, duration: 0.15 }, 0.78)
-            .to({}, { duration: 0.15 });
+            .to(".tile-label", { autoAlpha: 0, duration: 0.32 }, 0.3)
+            // Field keeps scaling under the reveal, then clears; reveal hands
+            // straight off to the real Services header on unpin.
+            .to(tileGridRef.current, { autoAlpha: 0, duration: 0.25 }, 0.72)
+            .to(revealRef.current, { autoAlpha: 0, duration: 0.13 }, 0.9);
         }
 
         return () => {
@@ -156,7 +210,7 @@ export function HeroBento() {
   return (
     <section
       ref={sectionRef}
-      className="relative isolate flex min-h-[calc(100svh_-_var(--nav-h))] items-center overflow-clip px-6 py-24 md:py-28"
+      className="relative isolate flex min-h-[calc(100svh_-_var(--nav-h))] items-center overflow-clip px-6 py-16 sm:py-20 md:py-28"
     >
       {/* ---- Atmospheric background layer (z-decor) ---------------------- */}
       <div className="pointer-events-none absolute inset-0 z-[var(--z-decor)]" aria-hidden>
@@ -200,7 +254,7 @@ export function HeroBento() {
           >
             {HERO_TILES.map((tile, i) =>
               i === ZOOM_INDEX ? (
-                <div key={`${tile.label}-${i}`} className="relative z-[1] aspect-square">
+                <div key={`${tile.label}-${i}`} ref={focalCellRef} className="relative z-[1] aspect-square">
                   <div
                     aria-hidden
                     className="hero-ghost absolute inset-0 translate-x-2 translate-y-2 rotate-2 rounded-2xl border border-home-border bg-home-surface/30"
@@ -252,7 +306,7 @@ export function HeroBento() {
       />
 
       {/* ---- Foreground content (z-content) ---------------------------- */}
-      <div className="relative z-[var(--z-content)] mx-auto w-full max-w-container">
+      <div ref={contentRef} className="relative z-[var(--z-content)] mx-auto w-full max-w-container">
         <div className="max-w-xl">
           <p className="hero-eyebrow text-sm font-semibold uppercase tracking-[0.22em] text-primary">
             Forge Digital
@@ -279,18 +333,41 @@ export function HeroBento() {
               See our work
             </Link>
           </div>
+
+          {/* Mobile interface texture — the scattered field above is
+              desktop-only decoration; small screens get a compact, floating
+              version so the hero doesn't read as a bare headline on a big
+              empty canvas. */}
+          <ul className="mt-12 grid grid-cols-2 gap-3 md:hidden" aria-hidden>
+            {HERO_TILES.slice(0, 4).map((tile, i) => (
+              <li
+                key={tile.label}
+                className={`hero-mobile-tile decor-card motion-decor flex flex-col gap-1 p-4 ${
+                  i % 2 ? "animate-drift" : "animate-float"
+                }`}
+                style={{ animationDelay: `${i * -1.7}s`, animationDuration: `${9 + (i % 3)}s` }}
+              >
+                <span className="font-display text-2xl leading-none text-home-text">{tile.stat}</span>
+                <span className="text-[0.62rem] uppercase tracking-wide text-home-muted">{tile.label}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
 
-      {/* Scroll "becoming" overlay — below the header, above the section. */}
+      {/* Scroll "becoming" overlay — laid out to match the Services section
+          header (same container, left edge, type) so the zoom resolves onto
+          it seamlessly instead of jumping from a centered card. */}
       <div
         ref={revealRef}
-        className="pointer-events-none fixed inset-0 z-[var(--z-section-overlay)] flex flex-col items-center justify-center px-6 text-center opacity-0"
+        className="pointer-events-none fixed inset-0 z-[var(--z-section-overlay)] opacity-0"
       >
-        <p className="text-sm font-semibold uppercase tracking-[0.22em] text-primary">What we do</p>
-        <h2 className="mt-4 max-w-3xl font-display text-display-2 text-home-text">
-          Eight services, one accountable team
-        </h2>
+        <div className="mx-auto flex h-full max-w-container flex-col justify-center px-6">
+          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-primary">What we do</p>
+          <h2 className="mt-4 max-w-2xl font-display text-display-2 text-home-text">
+            Eight services, one accountable team
+          </h2>
+        </div>
       </div>
     </section>
   );

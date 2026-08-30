@@ -32,7 +32,7 @@ export function TestimonialsFloat({ testimonials }: { testimonials: TestimonialI
       </span>
 
       <div className="relative mx-auto max-w-container">
-        <div className="mb-14 max-w-2xl">
+        <div className="mb-10 max-w-2xl md:mb-14">
           <p className="text-sm font-semibold uppercase tracking-[0.22em] text-primary">Clients</p>
           <h2 className="mt-4 font-display text-display-2 text-home-text">What it&apos;s like to work with us</h2>
         </div>
@@ -42,7 +42,7 @@ export function TestimonialsFloat({ testimonials }: { testimonials: TestimonialI
             <figure
               key={testimonial.id}
               data-reveal
-              className={`glass motion-decor rounded-lg p-8 ${index % 2 ? "animate-float md:mt-10" : ""}`}
+              className={`glass motion-decor rounded-lg p-6 sm:p-8 ${index % 2 ? "md:mt-10 md:animate-float" : ""}`}
             >
               <blockquote className="font-display text-xl text-home-text md:text-2xl">
                 &ldquo;{testimonial.quote}&rdquo;
