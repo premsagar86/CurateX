@@ -28,34 +28,60 @@ const STATUS_LABEL: Record<RoadmapStep["status"], string> = {
   upcoming: "Upcoming",
 };
 
-// Simple bold line icons, one per stage (cycles if there are more steps).
-const STEP_ICONS: string[][] = [
-  ["M11 5a6 6 0 1 0 0 12 6 6 0 0 0 0-12z", "m20 20-4.2-4.2"],
-  ["M7 3h8l4 4v14H7z", "M15 3v4h4", "M10 12h6", "M10 16h6"],
-  ["M6 21V4", "M6 5h12l-2.5 3.5L18 12H6"],
-  ["M4 20l3.6-.8L18.4 8.4a2 2 0 0 0-2.8-2.8L4.8 16.4 4 20z", "M14.5 6.5 17.5 9.5"],
-  ["m9 8-4 4 4 4", "m15 8 4 4-4 4"],
-  ["M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12z", "M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"],
-  ["M12 3 21 8v8l-9 5-9-5V8z", "M3 8l9 5 9-5", "M12 13v8"],
-  ["M20 11a8 8 0 0 0-14-4", "M4 5v4h4", "M4 13a8 8 0 0 0 14 4", "M20 19v-4h-4"],
+// Clean line icons (Lucide geometry), one per stage — cycles if there are
+// more steps: search · document · flag · pen · code · check · package · cycle.
+const STEP_ICONS: ReactNode[] = [
+  <>
+    <circle cx="11" cy="11" r="7" />
+    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+  </>,
+  <>
+    <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+    <path d="M14 3v5h5" />
+    <line x1="9" y1="13" x2="15" y2="13" />
+    <line x1="9" y1="17" x2="15" y2="17" />
+  </>,
+  <>
+    <path d="M5 21V4" />
+    <path d="M5 4c3-1.5 6 1.5 9 0s5-1.5 5-1.5v9s-2 0-5 1.5-6-1.5-9 0z" />
+  </>,
+  <>
+    <path d="m14.5 5.5 4 4" />
+    <path d="M18.5 9.5 9 19l-5 1 1-5 9.5-9.5a2.83 2.83 0 0 1 4 4Z" />
+  </>,
+  <>
+    <polyline points="16 18 22 12 16 6" />
+    <polyline points="8 6 2 12 8 18" />
+  </>,
+  <>
+    <circle cx="12" cy="12" r="9" />
+    <path d="m8.5 12.5 2.5 2.5 4.5-5" />
+  </>,
+  <>
+    <path d="M21 8 12 3 3 8v8l9 5 9-5V8Z" />
+    <path d="m3 8 9 5 9-5" />
+    <path d="M12 13v8" />
+    <path d="m7.5 5.5 9 5" />
+  </>,
+  <>
+    <path d="M21 12a9 9 0 1 1-3-6.7" />
+    <path d="M21 4v5h-5" />
+  </>,
 ];
 
 function StepIcon({ index }: { index: number }) {
-  const paths = STEP_ICONS[index % STEP_ICONS.length];
   return (
     <svg
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={2.1}
+      strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="h-[42%] w-[42%] text-[#171717]"
+      className="h-[46%] w-[46%] text-[#171717]"
       aria-hidden
     >
-      {paths.map((d) => (
-        <path key={d} d={d} />
-      ))}
+      {STEP_ICONS[index % STEP_ICONS.length]}
     </svg>
   );
 }
