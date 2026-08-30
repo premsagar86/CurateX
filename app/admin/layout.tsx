@@ -8,6 +8,12 @@ import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { LogoutButton } from "@/components/portal/logout-button";
 
+// Admin is authenticated + per-request by nature (the getSession call below reads
+// headers()). Declare it explicitly so `next build` never tries to statically
+// prerender any /admin/** page — that would run Prisma with no DATABASE_URL in
+// CI. Layout segment config cascades to all nested routes.
+export const dynamic = "force-dynamic";
+
 const NAV_LINKS = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/leads", label: "Leads" },

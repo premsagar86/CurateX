@@ -4,9 +4,8 @@ import { db } from "@/lib/db";
 import { Section } from "@/components/ui/section";
 import { CtaBlock } from "@/components/marketing/cta-block";
 
-// DB-backed — cached via ISR (revalidate); unknown slugs render on-demand then
-// cache. `next build` still needs no database. See PLAN: CI build fix.
-export const revalidate = 300;
+// DB-backed — render per request so `next build` needs no database. See PLAN: CI build fix.
+export const dynamic = "force-dynamic";
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
   const post = await db.contentPost.findUnique({
