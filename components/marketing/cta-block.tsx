@@ -20,7 +20,10 @@ export function CtaBlock({
     <div className="section-y mx-auto max-w-container px-6 text-center">
       <h2 className="text-balance font-display text-2xl md:text-3xl">{heading}</h2>
       <p className="mx-auto mt-2 max-w-md leading-relaxed text-text-muted">{support}</p>
-      <Link href={ctaHref} className={cn(buttonVariants({ size: "lg" }), "mt-6 rounded-full px-8")}>
+      <Link
+        href={ctaHref}
+        className={cn(buttonVariants({ size: "lg" }), "mt-6 w-full rounded-full px-8 sm:w-auto")}
+      >
         {ctaLabel}
       </Link>
     </div>

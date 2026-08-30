@@ -4,10 +4,9 @@ import { cn } from "@/lib/utils";
 import { forwardRef, type ButtonHTMLAttributes } from "react";
 
 export const buttonVariants = cva(
-  // `min-h` + `py` (not a fixed `h`) and `whitespace-normal` so a long label
-  // wraps and the box grows instead of the text bleeding out on narrow
-  // screens; `text-center`/`leading-tight` keep wrapped labels tidy.
-  "inline-flex items-center justify-center gap-2 whitespace-normal rounded-md text-center font-semibold leading-tight transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-50 disabled:pointer-events-none",
+  // Labels stay on ONE line (`whitespace-nowrap`) at every width; keep them
+  // short. `min-h` + `py` (not a fixed `h`) so nothing clips vertically.
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-center font-semibold leading-tight transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-50 disabled:pointer-events-none",
   {
     variants: {
       variant: {

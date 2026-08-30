@@ -37,7 +37,7 @@ export default async function ServicePage({ params }: { params: { slug: string }
       <Hero
         eyebrow={service.name}
         headline={service.oneLiner}
-        primaryCta={{ label: `Get a quote for ${service.name}`, href: "/contact" }}
+        primaryCta={{ label: `Get a quote for ${service.shortName}`, href: "/contact" }}
       />
 
       <Section heading="Who this is for" body={service.whoFor} />

@@ -199,8 +199,8 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    /* min-height + block padding (not a fixed height) so a long label wraps
-       and the pill grows rather than the text bleeding out on mobile. */
+    /* Label stays on one line; min-height + block padding (not a fixed
+       height) just guard against any vertical clipping. */
     min-height: 3rem;
     padding-block: 0.55rem;
     padding-inline: 1.75rem;
@@ -209,8 +209,7 @@ body {
     font-size: 0.95rem;
     line-height: 1.15;
     text-align: center;
-    white-space: normal;
-    text-wrap: balance;
+    white-space: nowrap;
     transition:
       transform var(--duration-base) var(--ease-standard),
       background-color var(--duration-base) var(--ease-standard),

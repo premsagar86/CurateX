@@ -8,6 +8,8 @@ export interface Service {
   slug: string;
   type: ServiceType;
   name: string;
+  /** Compact form of `name` for tight UI (CTA labels, mobile tiles). */
+  shortName: string;
   oneLiner: string;
   whoFor: string;
   deliverables: string[];
@@ -20,6 +22,7 @@ export const services: Service[] = [
     slug: "website-design-development",
     type: "WEBSITE",
     name: "Website Design & Development",
+    shortName: "web design",
     oneLiner: "A credible, converting website — built once, built well.",
     whoFor:
       "Growing businesses that don't yet have a website that matches the quality of the work they actually do, or whose current site was built cheaply and never maintained.",
@@ -56,6 +59,7 @@ export const services: Service[] = [
     slug: "ui-ux-design",
     type: "UI_UX_DESIGN",
     name: "UI/UX Design",
+    shortName: "UI/UX design",
     oneLiner: "Interfaces designed around how people actually use them.",
     whoFor: "Teams building an app or product who need screens designed before (or instead of) a full website build.",
     deliverables: [
@@ -79,6 +83,7 @@ export const services: Service[] = [
     slug: "branding-visual-identity",
     type: "BRANDING",
     name: "Branding & Visual Identity",
+    shortName: "branding",
     oneLiner: "A visual identity your team can actually use consistently.",
     whoFor: "Businesses launching fresh, or rebranding from a logo that was never built out into a real system.",
     deliverables: [
@@ -102,6 +107,7 @@ export const services: Service[] = [
     slug: "graphic-design-marketing-creatives",
     type: "GRAPHIC_DESIGN",
     name: "Graphic Design & Marketing Creatives",
+    shortName: "graphic design",
     oneLiner: "Posters, social creatives, and sales collateral that look like they came from one brand.",
     whoFor: "Any business that needs recurring design output — event posters, sales decks, social creatives — without hiring an in-house designer.",
     deliverables: ["Batch design turnaround (2-5 days typical)", "Consistent use of your brand system", "Source files on request"],
@@ -117,6 +123,7 @@ export const services: Service[] = [
     slug: "social-media-management",
     type: "SOCIAL_MEDIA",
     name: "Social Media Management & Strategy",
+    shortName: "social media",
     oneLiner: "A consistent social presence, planned monthly and actually shipped.",
     whoFor: "Businesses whose social presence is inconsistent or has gone quiet — this is a retainer built specifically to fix that continuity gap.",
     deliverables: [
@@ -140,6 +147,7 @@ export const services: Service[] = [
     slug: "content-creation",
     type: "CONTENT_CREATION",
     name: "Content Creation",
+    shortName: "content creation",
     oneLiner: "Written and short-form visual content, produced on a real cadence.",
     whoFor: "Businesses that need a steady stream of blog, caption, or short-form content without staffing a writer.",
     deliverables: ["Written content per an agreed monthly volume", "Basic visual/short-form pieces", "AI-assisted drafting, always human-reviewed before it ships"],
@@ -155,6 +163,7 @@ export const services: Service[] = [
     slug: "seo",
     type: "SEO",
     name: "SEO (On-Page + Local)",
+    shortName: "SEO",
     oneLiner: "Findable in search — without empty ranking promises.",
     whoFor: "Local and regional businesses that are effectively invisible in organic and local search results.",
     deliverables: ["A technical SEO audit", "Keyword & local-pack strategy", "On-page implementation", "Monthly content/link-building cadence", "Monthly ranking/traffic report"],
@@ -174,6 +183,7 @@ export const services: Service[] = [
     slug: "ecommerce-builds",
     type: "ECOMMERCE",
     name: "E-commerce Builds",
+    shortName: "e-commerce",
     oneLiner: "A store built to actually sell, with a real checkout.",
     whoFor: "Product businesses that need a proper online store, not a website with a checkout bolted on afterward.",
     deliverables: ["Full catalog integration", "Payment gateway integration", "Full technical SEO setup", "30-day post-launch support window"],
