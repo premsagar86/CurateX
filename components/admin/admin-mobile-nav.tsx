@@ -60,9 +60,11 @@ export function AdminMobileNav({ email }: { email: string }) {
             onClick={() => setOpen(false)}
             className="fixed inset-0 z-0 bg-black/30"
           />
-          <div className="absolute inset-x-0 top-full z-10 max-h-[75vh] overflow-y-auto border-b border-border bg-surface p-4 shadow-lg">
-            <AdminNav onNavigate={() => setOpen(false)} />
-            <div className="mt-4 flex items-center justify-between gap-3 border-t border-border pt-4">
+          <div className="absolute inset-x-0 top-full z-10 flex max-h-[calc(100dvh-3.5rem)] flex-col border-b border-border bg-surface shadow-lg">
+            <div className="min-h-0 flex-1 overflow-y-auto p-4">
+              <AdminNav onNavigate={() => setOpen(false)} />
+            </div>
+            <div className="flex shrink-0 items-center justify-between gap-3 border-t border-border p-4">
               <span className="min-w-0 flex-1">
                 <span className="block text-xs text-text-muted">Signed in as</span>
                 <span className="block truncate text-sm">{email}</span>
