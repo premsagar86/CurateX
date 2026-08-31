@@ -92,6 +92,17 @@
   --color-border: #33302a;
 }
 
+/* Client portal content area — darker, more defined card/divider borders
+   than the marketing-light default (§9.3 --color-border is intentionally
+   faint). Scoped to <main>, so the sidebar / bottom-nav chrome keeps the
+   subtle hairline. */
+.portal-content {
+  --color-border: #cfc9ba;
+}
+:root[data-theme="dark"] .portal-content {
+  --color-border: #45413a;
+}
+
 body {
   background: var(--color-background);
   color: var(--color-text);

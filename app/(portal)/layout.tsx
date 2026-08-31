@@ -38,7 +38,7 @@ export default async function PortalLayout({ children }: { children: React.React
         </div>
       </aside>
 
-      <main className="flex-1 p-6 pb-24 md:pb-6">{children}</main>
+      <main className="portal-content flex-1 p-6 pb-24 md:pb-6">{children}</main>
 
       <nav className="fixed inset-x-0 bottom-0 flex border-t border-border bg-surface md:hidden">
         {NAV_LINKS.map((link) => (
