@@ -19,7 +19,24 @@ const STATE_BADGE: Record<string, "neutral" | "success" | "warning" | "info"> = 
   CLOSED: "neutral",
 };
 
+const PROJECT_STATE_ORDER = ["ONBOARDING", "ACTIVE", "REVIEW", "APPROVED", "DELIVERED", "CLOSED"] as const;
+const MILESTONE_STATUS_ORDER = ["UPCOMING", "IN_PROGRESS", "AWAITING_APPROVAL", "APPROVED", "DELIVERED"] as const;
+const INVOICE_STATUS_ORDER = ["DRAFT", "SENT", "OVERDUE", "PAID", "CANCELLED"] as const;
+const INVOICE_STATUS_LABEL: Record<string, string> = {
+  DRAFT: "Draft",
+  SENT: "Sent",
+  OVERDUE: "Overdue",
+  PAID: "Paid",
+  CANCELLED: "Cancelled",
+};
+
 const isDone = (status: string) => status === "APPROVED" || status === "DELIVERED";
+
+/** Fill a fixed key order from groupBy rows, defaulting missing keys to 0. */
+function fillCounts(order: readonly string[], rows: { key: string; count: number }[]) {
+  const map = new Map(rows.map((r) => [r.key, r.count]));
+  return order.map((key) => ({ key, count: map.get(key) ?? 0 }));
+}
 
 export default async function DashboardPage() {
   const session = await auth.api.getSession({ headers: headers() });
@@ -29,21 +46,47 @@ export default async function DashboardPage() {
     return <EmptyState title="No client account linked" description="Contact your Forge Digital team if this looks wrong." />;
   }
 
-  const [projects, invoicesDue, recentComments] = await Promise.all([
+  const [activeProjects, projectStateRows, invoiceStatusRows, commentCount, recentComments] = await Promise.all([
     db.project.findMany({
       where: { clientId, state: { notIn: ["CLOSED"] } },
       include: { milestones: { orderBy: { order: "asc" } } },
     }),
-    db.invoice.count({ where: { clientId, status: { in: ["SENT", "OVERDUE"] } } }),
+    db.project.groupBy({ by: ["state"], where: { clientId }, _count: true }),
+    db.invoice.groupBy({ by: ["status"], where: { clientId }, _count: true }),
+    db.comment.count({ where: { project: { clientId } } }),
     db.comment.findMany({
       where: { project: { clientId } },
       orderBy: { createdAt: "desc" },
-      take: 5,
+      take: 6,
       include: { author: true, project: true },
     }),
   ]);
 
-  const allMilestones = projects.flatMap((p) => p.milestones.map((m) => ({ ...m, projectName: p.name, projectId: p.id })));
+  const projectStateCounts = fillCounts(
+    PROJECT_STATE_ORDER,
+    projectStateRows.map((r) => ({ key: r.state, count: r._count }))
+  );
+  const invoiceStatusCounts = fillCounts(
+    INVOICE_STATUS_ORDER,
+    invoiceStatusRows.map((r) => ({ key: r.status, count: r._count }))
+  );
+  const totalProjects = projectStateCounts.reduce((n, r) => n + r.count, 0);
+  const invoicesDue = invoiceStatusCounts
+    .filter((r) => r.key === "SENT" || r.key === "OVERDUE")
+    .reduce((n, r) => n + r.count, 0);
+
+  const allMilestones = activeProjects.flatMap((p) =>
+    p.milestones.map((m) => ({ ...m, projectName: p.name, projectId: p.id }))
+  );
+  const milestoneStatusCounts = fillCounts(
+    MILESTONE_STATUS_ORDER,
+    Object.entries(
+      allMilestones.reduce<Record<string, number>>((acc, m) => {
+        acc[m.status] = (acc[m.status] ?? 0) + 1;
+        return acc;
+      }, {})
+    ).map(([key, count]) => ({ key, count }))
+  );
   const awaiting = allMilestones.filter((m) => m.status === "AWAITING_APPROVAL");
   const doneCount = allMilestones.filter((m) => isDone(m.status)).length;
   const overallPct = allMilestones.length > 0 ? Math.round((doneCount / allMilestones.length) * 100) : 0;
@@ -55,26 +98,21 @@ export default async function DashboardPage() {
           Welcome back{session!.user.name ? `, ${session!.user.name}` : ""}
         </h1>
         <p className="text-sm text-text-muted">
-          {projects.length} active project{projects.length === 1 ? "" : "s"}
+          {activeProjects.length === 0
+            ? "No active projects right now."
+            : `${activeProjects.length} active project${activeProjects.length === 1 ? "" : "s"}`}
           {awaiting.length > 0 && ` · ${awaiting.length} awaiting your review`}
           {invoicesDue > 0 && ` · ${invoicesDue} invoice${invoicesDue === 1 ? "" : "s"} due`}
         </p>
       </header>
 
-      {/* KPI row */}
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatTile label="Active projects" value={projects.length} href="/projects" />
-        <StatTile
-          label="Needs your approval"
-          value={awaiting.length}
-          tone={awaiting.length > 0 ? "warning" : "default"}
-        />
-        <StatTile
-          label="Invoices due"
-          value={invoicesDue}
-          href="/invoices"
-          tone={invoicesDue > 0 ? "error" : "default"}
-        />
+      {/* KPI row — always shown, real numbers (0 is 0) */}
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
+        <StatTile label="Active projects" value={activeProjects.length} href="/projects" />
+        <StatTile label="Total projects" value={totalProjects} href="/projects" />
+        <StatTile label="Milestones" value={allMilestones.length} />
+        <StatTile label="Needs your approval" value={awaiting.length} tone={awaiting.length > 0 ? "warning" : "default"} />
+        <StatTile label="Invoices due" value={invoicesDue} href="/invoices" tone={invoicesDue > 0 ? "error" : "default"} />
         <StatTile label="Overall progress" value={`${overallPct}%`} />
       </div>
 
@@ -97,9 +135,7 @@ export default async function DashboardPage() {
                   Approve <strong>{m.name}</strong> on {m.projectName}
                 </span>
                 {m.dueDate && (
-                  <span className="hidden text-text-muted sm:inline">
-                    due {m.dueDate.toLocaleDateString("en-IN")}
-                  </span>
+                  <span className="hidden text-text-muted sm:inline">due {m.dueDate.toLocaleDateString("en-IN")}</span>
                 )}
                 <span className="text-text-muted transition-transform group-hover:translate-x-0.5">→</span>
               </Link>
@@ -108,14 +144,38 @@ export default async function DashboardPage() {
         </section>
       )}
 
+      {/* Breakdown cards — always rendered; rows show 0 rather than disappearing */}
+      <section className="grid gap-3 md:grid-cols-3">
+        <BreakdownCard
+          title="Projects by stage"
+          href="/projects"
+          rows={projectStateCounts.map((r) => ({ label: PROJECT_STATE_LABEL[r.key] ?? r.key, count: r.count }))}
+          footer={totalProjects === 0 ? "No projects have been created yet." : undefined}
+        />
+        <BreakdownCard
+          title="Milestones by status"
+          rows={milestoneStatusCounts.map((r) => ({ label: MILESTONE_STATUS_LABEL[r.key] ?? r.key, count: r.count }))}
+          footer={allMilestones.length === 0 ? "No milestones on your active projects yet." : undefined}
+        />
+        <BreakdownCard
+          title="Invoices by status"
+          href="/invoices"
+          rows={invoiceStatusCounts.map((r) => ({ label: INVOICE_STATUS_LABEL[r.key] ?? r.key, count: r.count }))}
+          footer={invoiceStatusCounts.every((r) => r.count === 0) ? "No invoices have been issued yet." : undefined}
+        />
+      </section>
+
       {/* Projects */}
       <section className="flex flex-col gap-3">
         <h2 className="font-display text-lg tracking-tight">Your projects</h2>
-        {projects.length === 0 ? (
-          <EmptyState title="No active projects yet" description="Once a project kicks off, you'll see it here." />
+        {activeProjects.length === 0 ? (
+          <EmptyState
+            title="No active projects yet"
+            description="Once a project kicks off, it'll show up here with milestones and progress."
+          />
         ) : (
           <div className="grid gap-3 sm:grid-cols-2">
-            {projects.map((project) => {
+            {activeProjects.map((project) => {
               const total = project.milestones.length;
               const done = project.milestones.filter((m) => isDone(m.status)).length;
               const pct = total > 0 ? Math.round((done / total) * 100) : 0;
@@ -135,7 +195,7 @@ export default async function DashboardPage() {
                     <div className="flex flex-col gap-1.5">
                       <div className="flex justify-between text-xs text-text-muted">
                         <span>
-                          {done} / {total} milestones
+                          {total === 0 ? "No milestones yet" : `${done} / ${total} milestones`}
                         </span>
                         <span className="tabular-nums">{pct}%</span>
                       </div>
@@ -145,7 +205,12 @@ export default async function DashboardPage() {
                     </div>
 
                     <div className="mt-auto flex items-center gap-2 text-sm">
-                      {awaitingApproval ? (
+                      {total === 0 ? (
+                        <>
+                          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-text-muted" />
+                          <span className="text-text-muted">Milestones not scheduled yet</span>
+                        </>
+                      ) : awaitingApproval ? (
                         <>
                           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-warning" />
                           <span className="text-text-muted">
@@ -177,11 +242,14 @@ export default async function DashboardPage() {
 
       {/* Recent activity */}
       <section className="flex flex-col gap-3">
-        <h2 className="font-display text-lg tracking-tight">Recent activity</h2>
-        {recentComments.length === 0 ? (
-          <EmptyState title="No recent activity" />
-        ) : (
-          <Card className="p-0">
+        <div className="flex items-center gap-2">
+          <h2 className="font-display text-lg tracking-tight">Recent activity</h2>
+          <Badge variant="neutral">{commentCount}</Badge>
+        </div>
+        <Card className="p-0">
+          {recentComments.length === 0 ? (
+            <p className="px-5 py-4 text-sm text-text-muted">No comments on your projects yet.</p>
+          ) : (
             <ul className="divide-y divide-border">
               {recentComments.map((comment) => (
                 <li key={comment.id} className="flex items-center gap-3 px-5 py-3 text-sm">
@@ -198,8 +266,8 @@ export default async function DashboardPage() {
                 </li>
               ))}
             </ul>
-          </Card>
-        )}
+          )}
+        </Card>
       </section>
 
       <div className="flex flex-wrap gap-2 text-sm">
@@ -249,6 +317,40 @@ function StatTile({
     </Link>
   ) : (
     <div className={className}>{body}</div>
+  );
+}
+
+function BreakdownCard({
+  title,
+  rows,
+  href,
+  footer,
+}: {
+  title: string;
+  rows: { label: string; count: number }[];
+  href?: string;
+  footer?: string;
+}) {
+  const heading = <p className="border-b border-border px-5 py-3 text-sm font-medium">{title}</p>;
+  return (
+    <Card className="flex flex-col p-0">
+      {href ? (
+        <Link href={href} className="transition-colors hover:bg-surface-elevated">
+          {heading}
+        </Link>
+      ) : (
+        heading
+      )}
+      <ul className="divide-y divide-border">
+        {rows.map((row) => (
+          <li key={row.label} className="flex items-center justify-between px-5 py-2.5 text-sm">
+            <span className="text-text-muted">{row.label}</span>
+            <span className={cn("font-medium tabular-nums", row.count === 0 && "text-text-muted")}>{row.count}</span>
+          </li>
+        ))}
+      </ul>
+      {footer && <p className="border-t border-border px-5 py-3 text-xs text-text-muted">{footer}</p>}
+    </Card>
   );
 }
 
