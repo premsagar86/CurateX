@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { signOut } from "@/lib/auth-client";
 
-export function LogoutButton() {
+export function LogoutButton({ className }: { className?: string }) {
   const router = useRouter();
 
   return (
@@ -14,7 +14,9 @@ export function LogoutButton() {
         router.push("/login");
         router.refresh();
       }}
-      className="mt-2 text-text-muted underline"
+      // Portal keeps the plain underlined-link look; admin passes its own
+      // button styling.
+      className={className ?? "mt-2 text-text-muted underline"}
     >
       Log out
     </button>
