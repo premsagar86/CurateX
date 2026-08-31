@@ -46,6 +46,7 @@ export default async function PortalLayout({ children }: { children: React.React
             {link.label}
           </Link>
         ))}
+        <LogoutButton className="flex flex-1 flex-col items-center gap-1 py-3 text-xs" />
       </nav>
     </div>
   );
