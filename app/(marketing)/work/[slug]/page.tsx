@@ -49,6 +49,16 @@ export default async function CaseStudyPage({ params }: { params: { slug: string
         <div className="mt-4 flex aspect-video items-center justify-center rounded-lg border border-dashed border-border bg-surface-elevated text-sm text-text-muted">
           Project visual
         </div>
+        {caseStudy.liveUrl && (
+          <a
+            href={caseStudy.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary underline underline-offset-4"
+          >
+            Visit the live project ↗
+          </a>
+        )}
       </Section>
 
       <Section heading="The challenge" body={caseStudy.challenge} />

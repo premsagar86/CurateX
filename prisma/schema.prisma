@@ -420,6 +420,7 @@ model CaseStudy {
   testimonial   Testimonial? @relation(fields: [testimonialId], references: [id])
   title         String
   slug          String       @unique
+  liveUrl       String? // Optional link to the live/published project (§20.5 Project visual)
   services      Json? // ServiceType[] tags for filtering/linking (§16.5, §20.4) — kept as Json
                       // (not a native ServiceType[] array) so app-level casts stay unchanged
   challenge     String       @db.Text
